@@ -1,12 +1,13 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css'
 import NotFound from './pages/NotFound';
+import UserLogin from './pages/UserLogin';
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<div>test1</div>} />
-      <Route path="/about" element={<div>test2</div>} />
+      <Route path="/" element={<UserLogin />} />
+      <Route path="/test" element={<div>set</div>} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
