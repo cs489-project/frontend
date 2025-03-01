@@ -1,21 +1,23 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Route, Routes } from 'react-router-dom';
+import './App.css'
+import NotFound from './pages/NotFound';
+import UserLogin from './pages/UserLogin';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* 
-             for all users pages, prepend with /user
-             for all company pages, prepend with /org
-        */}
-        <Route path="/" element={<div>TODO USER LOGIN/SIGNUP PAGE</div>} />
-        <Route path="/user" element={<div>TODO USER LOGIN/SIGNUP PAGE</div>} />
-        <Route path="/org" element={<div>TODO ORG LOGIN/SIGNUP PAGE</div>} />
+    <Routes>
+      {/* 
+         for all users pages, prepend with /user
+         for all company pages, prepend with /org
+    */}
+      <Route path="/" element={<UserLogin />} />
+      <Route path="/user" element={<UserLogin />} />
+      <Route path="/org" element={<div>TODO ORG LOGIN/SIGNUP PAGE</div>} />
 
-        <Route path="/user/dashboard" element={<div>sdf</div>} />
-        <Route path="/org/dashboard" element={<div>sdf</div>} />
-      </Routes>
-    </Router>
+      <Route path="/user/dashboard" element={<div>sdf</div>} />
+      <Route path="/org/dashboard" element={<div>sdf</div>} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }
 
