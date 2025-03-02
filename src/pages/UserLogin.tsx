@@ -43,12 +43,12 @@ export default function UserLogin() {
       }}>Breakers</span></h1>
       <h4>Bug Bounty platform for you to show off your hacking skills</h4>
       <div style={{ height: "400px" }}>
-        <Paper elevation={3} sx={{ m: 6, p: 4, margin: "auto", display: 'flex' }}>
-          <div style={{ width: 600 }}>
-            <Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)} centered>
-              <Tab label="Sign Up" />
-              <Tab label="Login" />
-            </Tabs>
+        <Paper elevation={3} sx={{ m: 6, p: 4, margin: "auto" }}>
+          <Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)} centered>
+            <Tab label="Sign Up" />
+            <Tab label="Login" />
+          </Tabs>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
             <form onSubmit={handleSubmit}>
               {
                 tab === 0 && <TextField
@@ -88,6 +88,7 @@ export default function UserLogin() {
               />
               <TextField
                 label="2FA Code"
+                placeholder="Enter the 6 digit Google Authenticator Code Here"
                 type="text"
                 name="twoFaCode"
                 fullWidth
@@ -100,8 +101,10 @@ export default function UserLogin() {
                 {tab === 0 ? "Sign Up" : "Login"}
               </Button>
             </form>
+            {
+              tab === 0 && <QRCode qrCodeStr={twoFAOPT?.qrCode || ""} />
+            }
           </div>
-          <QRCode qrCodeStr={twoFAOPT?.qrCode || ""} />
         </Paper>
       </div>
     </Container>
