@@ -3,9 +3,9 @@ import { Container, TextField, Button, Paper, Tabs, Tab } from "@mui/material";
 import QRCode from "../components/QRCode";
 import * as OTPAuth from "otpauth";
 
-export default function UserLogin() {
+export default function OrgSignUpLogin() {
   const [tab, setTab] = useState(0);
-  const [form, setForm] = useState({ username: "", email: "", password: "", twoFaCode: "" });
+  const [form, setForm] = useState({ orgname: "", email: "", password: "", twoFaCode: "" });
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [twoFAOPT, setTwoFaOpt] = useState<{ secret: string, qrCode: string } | null>(null);
@@ -43,23 +43,23 @@ export default function UserLogin() {
       <h1><span style={{ color: "darkblue" }}>Byte</span><span style={{
         color: "purple"
       }}>Breakers</span></h1>
-      <h4>Bug Bounty platform for you to show off your hacking skills</h4>
+      <h4>Bug bounty platform for your organization to hire top security talents</h4>
       <div style={{ height: "400px" }}>
-        <Paper elevation={3} sx={{ m: 6, p: 4, margin: "auto" }}>
+        <Paper elevation={3} sx={{ m: 6, p: 2, margin: "auto" }}>
           <Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)} centered>
-            <Tab label="Sign Up" />
             <Tab label="Login" />
+            <Tab label="Sign Up" />
           </Tabs>
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <form onSubmit={handleSubmit}>
               {
-                tab === 0 && <TextField
-                  label="Full Name"
+                tab === 1 && <TextField
+                  label="Organization Name"
                   type="text"
-                  name="username"
+                  name="orgname"
                   fullWidth
                   margin="normal"
-                  value={form.username}
+                  value={form.orgname}
                   onChange={handleChange}
                   required
                 />
@@ -100,11 +100,11 @@ export default function UserLogin() {
                 required
               />
               <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-                {tab === 0 ? "Sign Up" : "Login"}
+                {tab === 1 ? "Sign Up" : "Login"}
               </Button>
             </form>
             {
-              tab === 0 && <QRCode qrCodeStr={twoFAOPT?.qrCode || ""} />
+              tab === 1 && <QRCode qrCodeStr={twoFAOPT?.qrCode || ""} />
             }
           </div>
         </Paper>
