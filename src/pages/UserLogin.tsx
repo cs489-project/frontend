@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, TextField, Button, Paper, Tabs, Tab } from "@mui/material";
+import QRCode from "../components/QRCode";
+import * as OTPAuth from "otpauth";
 
 export default function UserLogin() {
   const [tab, setTab] = useState(0);
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({ username: "", email: "", password: "", twoFaCode: "" });
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [twoFAOPT, setTwoFaOpt] = useState<{ secret: string, qrCode: string } | null>(null);
 
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -16,8 +19,7 @@ export default function UserLogin() {
     }
 
     if (e.target.name === "password") {
-      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      setPasswordError(passwordRegex.test(e.target.value) ? "" : "Password must be at least 8 characters, include a number, a letter, and a special character");
+      setPasswordError(e.target.value.length >= 10 ? "" : "Password must be at least 10 characters");
     }
   };
 
@@ -26,6 +28,14 @@ export default function UserLogin() {
     console.log(tab === 0 ? "Signing Up..." : "Logging In...", form);
   };
 
+  useEffect(() => {
+    const secret = new OTPAuth.Secret().base32;
+    let totp = new OTPAuth.TOTP({
+      secret
+    });
+    setTwoFaOpt({ secret, qrCode: totp.toString() });
+  }, []);
+
   return (
     <Container>
       <h1><span style={{ color: "darkblue" }}>Byte</span><span style={{
@@ -33,52 +43,65 @@ export default function UserLogin() {
       }}>Breakers</span></h1>
       <h4>Bug Bounty platform for you to show off your hacking skills</h4>
       <div style={{ height: "400px" }}>
-        <Paper elevation={3} sx={{ m: 6, p: 4, width: "400px", margin: "auto" }}>
-          <Tabs value={tab} onChange={(e, newValue) => setTab(newValue)} centered>
-            <Tab label="Sign Up" />
-            <Tab label="Login" />
-          </Tabs>
-          <form onSubmit={handleSubmit}>
-            {
-              tab === 0 && <TextField
-                label="Full Name"
-                type="text"
-                name="username"
+        <Paper elevation={3} sx={{ m: 6, p: 4, margin: "auto", display: 'flex' }}>
+          <div style={{ width: 600 }}>
+            <Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)} centered>
+              <Tab label="Sign Up" />
+              <Tab label="Login" />
+            </Tabs>
+            <form onSubmit={handleSubmit}>
+              {
+                tab === 0 && <TextField
+                  label="Full Name"
+                  type="text"
+                  name="username"
+                  fullWidth
+                  margin="normal"
+                  value={form.username}
+                  onChange={handleChange}
+                  required
+                />
+              }
+              <TextField
+                label="Email"
+                type="email"
+                name="email"
                 fullWidth
                 margin="normal"
-                value={form.username}
+                value={form.email}
+                onChange={handleChange}
+                required
+                error={!!emailError}
+                helperText={emailError}
+              />
+              <TextField
+                label="Password"
+                type="password"
+                name="password"
+                fullWidth
+                margin="normal"
+                value={form.password}
+                onChange={handleChange}
+                required
+                error={!!passwordError}
+                helperText={passwordError}
+              />
+              <TextField
+                label="2FA Code"
+                type="text"
+                name="twoFaCode"
+                fullWidth
+                margin="normal"
+                value={form.twoFaCode}
                 onChange={handleChange}
                 required
               />
-            }
-            <TextField
-              label="Email"
-              type="email"
-              name="email"
-              fullWidth
-              margin="normal"
-              value={form.email}
-              onChange={handleChange}
-              required
-              error={!!emailError}
-              helperText={emailError}
-            />
-            <TextField
-              label="Password"
-              type="password"
-              name="password"
-              fullWidth
-              margin="normal"
-              value={form.password}
-              onChange={handleChange}
-              required
-              error={!!passwordError}
-              helperText={passwordError}
-            />
-            <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
-              {tab === 0 ? "Sign Up" : "Login"}
-            </Button>
-          </form>
+              <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                {tab === 0 ? "Sign Up" : "Login"}
+              </Button>
+            </form>
+          </div>
+          <QRCode qrCodeStr={twoFAOPT?.qrCode || ""} />
         </Paper>
       </div>
     </Container>
