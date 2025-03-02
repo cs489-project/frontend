@@ -31,7 +31,9 @@ export default function UserLogin() {
   useEffect(() => {
     const secret = new OTPAuth.Secret().base32;
     let totp = new OTPAuth.TOTP({
-      secret
+      secret,
+      label: "2FA",
+      issuer: "ByteBreakers",
     });
     setTwoFaOpt({ secret, qrCode: totp.toString() });
   }, []);
