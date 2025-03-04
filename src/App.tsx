@@ -1,8 +1,9 @@
-import { Route, Routes } from 'react-router-dom';
-import './App.css'
-import NotFound from './pages/NotFound';
-import UserSignUpLogin from './pages/UserSignUpLogin';
-import OrgSignUpLogin from './pages/OrgSignUpLogin';
+import { Route, Routes } from "react-router-dom";
+import "./App.css";
+import NotFound from "./pages/NotFound";
+import UserSignUpLogin from "./pages/UserSignUpLogin";
+import OrgSignUpLogin from "./pages/OrgSignUpLogin";
+import UserDashboard from "./pages/UserDashboard";
 
 function App() {
   return (
@@ -15,7 +16,7 @@ function App() {
       <Route path="/user" element={<UserSignUpLogin />} />
       <Route path="/org" element={<OrgSignUpLogin />} />
 
-      <Route path="/user/dashboard" element={<div>sdf</div>} />
+      <Route path="/user/dashboard" element={<UserDashboard />} />
       <Route path="/org/dashboard" element={<div>sdf</div>} />
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -16,11 +16,17 @@ export default function UserSignUpLogin() {
 
     if (e.target.name === "email") {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      setEmailError(emailRegex.test(e.target.value) ? "" : "Invalid email format");
+      setEmailError(
+        emailRegex.test(e.target.value) ? "" : "Invalid email format"
+      );
     }
 
     if (e.target.name === "password") {
-      setPasswordError(e.target.value.length >= 10 ? "" : "Password must be at least 10 characters");
+      setPasswordError(
+        e.target.value.length >= 10
+          ? ""
+          : "Password must be at least 10 characters"
+      );
     }
   };
 
@@ -32,20 +38,35 @@ export default function UserSignUpLogin() {
 
   return (
     <Container>
-      <h1><span style={{ color: "darkblue" }}>Byte</span><span style={{
-        color: "purple"
-      }}>Breakers</span></h1>
+      <h1>
+        <span style={{ color: "darkblue" }}>Byte</span>
+        <span
+          style={{
+            color: "purple",
+          }}
+        >
+          Breakers
+        </span>
+      </h1>
       <h4>Bug bounty platform for you to show off your hacking skills</h4>
       <div style={{ height: "400px" }}>
         <Paper elevation={3} sx={{ m: 6, p: 2, margin: "auto" }}>
-          {
-            !mfaStage ? <><Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)} centered>
-              <Tab label="Login" />
-              <Tab label="Sign Up" />
-            </Tabs>
-              <form onSubmit={handleSubmit} style={{ width: "600px", margin: 'auto' }}>
-                {
-                  tab === 1 && <TextField
+          {!mfaStage ? (
+            <>
+              <Tabs
+                value={tab}
+                onChange={(_e, newValue) => setTab(newValue)}
+                centered
+              >
+                <Tab label="Login" />
+                <Tab label="Sign Up" />
+              </Tabs>
+              <form
+                onSubmit={handleSubmit}
+                style={{ width: "600px", margin: "auto" }}
+              >
+                {tab === 1 && (
+                  <TextField
                     label="Full Name"
                     type="text"
                     name="username"
@@ -55,7 +76,7 @@ export default function UserSignUpLogin() {
                     onChange={handleChange}
                     required
                   />
-                }
+                )}
                 <TextField
                   label="Email"
                   type="email"
@@ -80,12 +101,24 @@ export default function UserSignUpLogin() {
                   error={!!passwordError}
                   helperText={passwordError}
                 />
-                <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  sx={{ mt: 2 }}
+                >
                   {tab === 1 ? "Sign Up" : "Login"}
                 </Button>
               </form>
-            </> : <QRCode type={tab === 0 ? "login" : "signup"} goBack={() => setMFAStage(false)} submit2FA={() => navigate("/dashboard")} />
-          }
+            </>
+          ) : (
+            <QRCode
+              type={tab === 0 ? "login" : "signup"}
+              goBack={() => setMFAStage(false)}
+              submit2FA={() => navigate("/user/dashboard")}
+            />
+          )}
         </Paper>
       </div>
     </Container>
