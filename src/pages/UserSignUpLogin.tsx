@@ -26,10 +26,8 @@ export default function UserSignUpLogin() {
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-    if (tab === 1) {
-      setMFAStage(true);
-    }
-    console.log(tab === 0 ? "Signing Up..." : "Logging In...", form);
+    setMFAStage(true);
+    // TODO
   };
 
   return (
@@ -86,8 +84,7 @@ export default function UserSignUpLogin() {
                   {tab === 1 ? "Sign Up" : "Login"}
                 </Button>
               </form>
-            </> : <QRCode goBack={() => setMFAStage(false)} submit2FA={() => navigate("/dashboard")
-            } />
+            </> : <QRCode type={tab === 0 ? "login" : "signup"} goBack={() => setMFAStage(false)} submit2FA={() => navigate("/dashboard")} />
           }
         </Paper>
       </div>
