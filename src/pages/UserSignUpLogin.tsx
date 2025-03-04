@@ -75,6 +75,7 @@ export default function UserSignUpLogin() {
                     value={form.username}
                     onChange={handleChange}
                     required
+                    size="small"
                   />
                 )}
                 <TextField
@@ -88,6 +89,7 @@ export default function UserSignUpLogin() {
                   required
                   error={!!emailError}
                   helperText={emailError}
+                  size="small"
                 />
                 <TextField
                   label="Password"
@@ -100,6 +102,7 @@ export default function UserSignUpLogin() {
                   required
                   error={!!passwordError}
                   helperText={passwordError}
+                  size="small"
                 />
                 <Button
                   type="submit"

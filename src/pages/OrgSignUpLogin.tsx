@@ -56,6 +56,7 @@ export default function UserSignUpLogin() {
                     value={form.orgname}
                     onChange={handleChange}
                     required
+                    size="small"
                   />
                 }
                 <TextField
@@ -69,6 +70,7 @@ export default function UserSignUpLogin() {
                   required
                   error={!!emailError}
                   helperText={emailError}
+                  size="small"
                 />
                 <TextField
                   label="Password"
@@ -81,6 +83,7 @@ export default function UserSignUpLogin() {
                   required
                   error={!!passwordError}
                   helperText={passwordError}
+                  size="small"
                 />
                 <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                   {tab === 1 ? "Sign Up" : "Login"}
