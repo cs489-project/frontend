@@ -56,6 +56,7 @@ const QRCodeGenerator = ({ type, goBack, submit2FA }: Props) => {
           required
           error={!!codeErr}
           helperText={codeErr}
+          size="small"
         />
         <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 10 }}>
           <Button onClick={goBack} variant="outlined" color="primary">Go Back</Button>

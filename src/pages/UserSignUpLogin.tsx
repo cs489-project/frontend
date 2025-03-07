@@ -50,7 +50,7 @@ export default function UserSignUpLogin() {
       </h1>
       <h4>Bug bounty platform for you to show off your hacking skills</h4>
       <div style={{ height: "400px" }}>
-        <Paper elevation={3} sx={{ m: 6, p: 2, margin: "auto" }}>
+        <Paper elevation={3} sx={{ width: 400, p: 4, margin: "40px auto" }}>
           {!mfaStage ? (
             <>
               <Tabs
@@ -63,7 +63,7 @@ export default function UserSignUpLogin() {
               </Tabs>
               <form
                 onSubmit={handleSubmit}
-                style={{ width: "600px", margin: "auto" }}
+                style={{ width: 300, margin: "auto" }}
               >
                 {tab === 1 && (
                   <TextField

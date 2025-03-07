@@ -39,13 +39,13 @@ export default function UserSignUpLogin() {
       }}>Breakers</span></h1>
       <h4>Bug bounty platform for your organization to hire top security talents</h4>
       <div style={{ height: "400px" }}>
-        <Paper elevation={3} sx={{ m: 6, p: 2, margin: "auto" }}>
+        <Paper elevation={3} sx={{ width: 400, p: 4, margin: "40px auto" }}>
           {
             !mfaStage ? <><Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)} centered>
               <Tab label="Login" />
               <Tab label="Sign Up" />
             </Tabs>
-              <form onSubmit={handleSubmit} style={{ width: "600px", margin: 'auto' }}>
+              <form onSubmit={handleSubmit} style={{ width: "300px", margin: 'auto' }}>
                 {
                   tab === 1 && <TextField
                     label="Company Name"
