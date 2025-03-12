@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AppBar, Toolbar, Tabs, Tab, IconButton, Menu, MenuItem, Typography, Box, Avatar } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import OrgProfile from "../components/OrgProfile";
+import OrgPostingList from "../components/OrgPostingList";
 
 export default function OrgDashboard() {
     const [tabIndex, setTabIndex] = useState(0);
@@ -26,9 +27,8 @@ export default function OrgDashboard() {
             <AppBar position="static">
                 <Toolbar>
                     <Tabs value={tabIndex} onChange={handleTabChange} textColor="inherit" indicatorColor="primary">
-                        <Tab label="Dashboard" />
-                        <Tab label="Settings" />
-                        <Tab label="Analytics" />
+                        <Tab label="Overview" />
+                        <Tab label="Create" />
                     </Tabs>
                     <Box sx={{ flexGrow: 1 }} />
                     <IconButton color="inherit" onClick={handleProfileClick}>
@@ -43,9 +43,8 @@ export default function OrgDashboard() {
                 </Toolbar>
             </AppBar>
             <Box sx={{ padding: 2 }}>
-                {tabIndex === 0 && <Typography variant="h4">Welcome to the Dashboard</Typography>}
+                {tabIndex === 0 && <Typography variant="h4"><OrgPostingList /></Typography>}
                 {tabIndex === 1 && <Typography variant="h4">Settings</Typography>}
-                {tabIndex === 2 && <Typography variant="h4">Analytics Data</Typography>}
             </Box>
         </Box>
     );
