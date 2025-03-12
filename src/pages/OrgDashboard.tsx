@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Tabs, Tab, IconButton, Menu, MenuItem, Typography, Box
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import OrgProfile from "../components/OrgProfile";
 import OrgPostingList from "../components/OrgPostingList";
+import PostingBuilder from "../components/PostingBuilder";
 
 export default function OrgDashboard() {
     const [tabIndex, setTabIndex] = useState(0);
@@ -44,7 +45,7 @@ export default function OrgDashboard() {
             </AppBar>
             <Box sx={{ padding: 2 }}>
                 {tabIndex === 0 && <Typography variant="h4"><OrgPostingList /></Typography>}
-                {tabIndex === 1 && <Typography variant="h4">Settings</Typography>}
+                {tabIndex === 1 && <Typography variant="h4"><PostingBuilder /></Typography>}
             </Box>
         </Box>
     );
