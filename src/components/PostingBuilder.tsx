@@ -1,13 +1,21 @@
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import { useState } from "react";
 import MarkdownWrapper from "./MarkdownWrapper";
 
+const INITIAL_STATE = {
+    title: "",
+    description: "",
+    points: 100
+};
+
 export default function PostingBuilder() {
-    const [form, setForm] = useState({
-        title: "",
-        description: "",
-        points: 100
-    });
+    const [form, setForm] = useState({ ...INITIAL_STATE });
+
+    const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        // TODO: CALL API
+        setForm({ ...INITIAL_STATE });
+    }
 
     return <div style={{ padding: 12 }}>
         <form>
@@ -35,7 +43,7 @@ export default function PostingBuilder() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <textarea
-                    style={{ resize: "none", width: 400, height: 500 }}
+                    style={{ resize: "none", width: 400, height: 400 }}
                     placeholder="Enter your detailed description in markdown here"
                     value={form.description}
                     required
@@ -45,6 +53,8 @@ export default function PostingBuilder() {
                     <MarkdownWrapper value={form.description}></MarkdownWrapper>
                 </div>
             </div>
+            <br />
+            <Button fullWidth variant="contained" type="submit" onClick={handleSubmit}>Create Posting</Button>
         </form>
     </div>
 }
