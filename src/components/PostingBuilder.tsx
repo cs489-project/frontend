@@ -43,7 +43,7 @@ export default function PostingBuilder() {
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <textarea
-                    style={{ resize: "none", width: 400, height: 400 }}
+                    style={{ resize: "none", width: 500, height: 400 }}
                     placeholder="Enter your detailed description in markdown here"
                     value={form.description}
                     required

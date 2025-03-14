@@ -8,7 +8,7 @@ type Props = {
 }
 
 export default function MarkdownWrapper(props: Props) {
-    return <div className="markdown-body" style={{ height: props.maxHeight || 400, overflow: "auto", border: "1px solid black" }}>
+    return <div className="markdown-body" style={{ height: props.maxHeight || 400, overflow: "auto", border: "1px solid black", textAlign: "left" }}>
         <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
             {props.value}
         </ReactMarkdown>
