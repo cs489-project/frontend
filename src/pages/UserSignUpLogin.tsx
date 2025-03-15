@@ -119,7 +119,7 @@ export default function UserSignUpLogin() {
             <QRCode
               type={tab === 0 ? "login" : "signup"}
               goBack={() => setMFAStage(false)}
-              submit2FA={() => navigate("/user/dashboard")}
+              submit2FA={() => navigate("/user/dashboard/opportunities")}
             />
           )}
         </Paper>
