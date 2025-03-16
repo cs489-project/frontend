@@ -2,17 +2,15 @@ import { useState } from "react";
 import { AppBar, Toolbar, Tabs, Tab, IconButton, Menu, MenuItem, Typography, Box, Avatar } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import OrgProfile from "../components/OrgProfile";
-import OrgPostingList from "../components/OrgPostingList";
-import PostingBuilder from "../components/PostingBuilder";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 export default function OrgDashboard() {
-    const [tabIndex, setTabIndex] = useState(0);
+    const location = useLocation();
+    const tabPaths = ["/org/dashboard/", "/org/dashboard/create"];
+    const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const [orgProfile, setOrgProfile] = useState(false);
-
-    const handleTabChange = (_event: any, newValue: number) => {
-        setTabIndex(newValue);
-    };
+    const currentTab = tabPaths.indexOf(location.pathname);
 
     const handleProfileClick = (event: any) => {
         setAnchorEl(event.currentTarget);
@@ -22,16 +20,21 @@ export default function OrgDashboard() {
         setAnchorEl(null);
     };
 
+    const handleTabChange = (_e: any, value: any) => {
+        navigate(tabPaths[value]); // Navigate to new tab path
+    }
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <OrgProfile open={orgProfile} onClose={() => setOrgProfile(false)} />
             <AppBar position="static">
                 <Toolbar>
-                    <Tabs value={tabIndex} onChange={handleTabChange} textColor="inherit" indicatorColor="primary">
+                    <Tabs value={currentTab} onChange={handleTabChange} textColor="inherit" indicatorColor="primary">
                         <Tab label="Overview" />
                         <Tab label="Create" />
                     </Tabs>
                     <Box sx={{ flexGrow: 1 }} />
+                    <Typography>Welcome back, Company Name</Typography>
                     <IconButton color="inherit" onClick={handleProfileClick}>
                         <Avatar>
                             <AccountCircleIcon />
@@ -43,10 +46,7 @@ export default function OrgDashboard() {
                     </Menu>
                 </Toolbar>
             </AppBar>
-            <Box sx={{ padding: 2 }}>
-                {tabIndex === 0 && <Typography variant="h4"><OrgPostingList /></Typography>}
-                {tabIndex === 1 && <Typography variant="h4"><PostingBuilder /></Typography>}
-            </Box>
+            <Outlet />
         </Box>
     );
 }
