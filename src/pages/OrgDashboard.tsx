@@ -6,7 +6,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 export default function OrgDashboard() {
     const location = useLocation();
-    const tabPaths = ["/org/dashboard/", "/org/dashboard/create"];
+    const tabPaths = ["/org/dashboard/", "/org/dashboard/create", "/org/dashboard/submissions"];
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const [orgProfile, setOrgProfile] = useState(false);
@@ -32,6 +32,7 @@ export default function OrgDashboard() {
                     <Tabs value={currentTab} onChange={handleTabChange} textColor="inherit" indicatorColor="primary">
                         <Tab label="Overview" />
                         <Tab label="Create" />
+                        <Tab label="Submissions" />
                     </Tabs>
                     <Box sx={{ flexGrow: 1 }} />
                     <Typography>Welcome back, Company Name</Typography>
