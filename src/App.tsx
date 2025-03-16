@@ -12,6 +12,8 @@ import UDInbox from "./components/user-dashboard/UDInbox";
 import UDLeaderboard from "./components/user-dashboard/UDLeaderboard";
 import UDSettings from "./components/user-dashboard/UDSettings";
 import { SnackbarProvider } from "./components/SnackBar";
+import OrgPostingList from "./components/OrgPostingList";
+import PostingBuilder from "./components/PostingBuilder";
 
 function App() {
   return (
@@ -38,7 +40,10 @@ function App() {
         </Route>
 
         <Route path="/org" element={<OrgSignUpLogin />} />
-        <Route path="/org/dashboard" element={<OrgDashboard />} />
+        <Route path="/org/dashboard" element={<OrgDashboard />}>
+          <Route index element={<OrgPostingList />}></Route>
+          <Route path="create" element={<PostingBuilder />}></Route>
+        </Route>
         <Route path="/org/pending" element={<PendingSignUp />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -73,7 +73,7 @@ export default function PostingBuilder() {
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <textarea
                     style={{ resize: "none", width: 500, height: 400 }}
-                    placeholder="Enter your detailed description in markdown here"
+                    placeholder="Enter your detailed description in markdown here, the rendered results will show up to the right"
                     value={form.description}
                     required
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
