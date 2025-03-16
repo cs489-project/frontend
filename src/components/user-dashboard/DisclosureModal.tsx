@@ -178,12 +178,8 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
               height: '85vh',
               maxHeight: '900px',
               m: { xs: 1, sm: 2 },
-              backgroundColor: theme.palette.mode === 'dark'
-                ? alpha(theme.palette.background.paper, 0.95)
-                : theme.palette.background.paper,
-              backgroundImage: theme.palette.mode === 'dark'
-                ? 'linear-gradient(180deg, rgba(35,35,35,0.6) 0%, rgba(25,25,25,0.8) 100%)'
-                : 'linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,1) 100%)',
+              backgroundColor: theme.palette.background.paper,
+              backgroundImage: 'linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,1) 100%)',
               backdropFilter: 'blur(10px)'
             }
           }
@@ -191,7 +187,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
         sx={{
           '& .MuiBackdrop-root': {
             backdropFilter: 'blur(4px)',
-            backgroundColor: alpha(theme.palette.mode === 'dark' ? '#000' : '#fff', 0.6),
+            backgroundColor: alpha('#fff', 0.6),
           }
         }}
       >
@@ -204,9 +200,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
             borderColor: alpha(theme.palette.divider, 0.1),
             px: 3,
             py: 2,
-            bgcolor: theme.palette.mode === 'dark'
-              ? alpha(theme.palette.background.paper, 0.5)
-              : alpha(theme.palette.background.paper, 0.5),
+            bgcolor: alpha(theme.palette.background.paper, 0.5),
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
@@ -389,7 +383,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
                     fontSize: '0.875rem',
                     p: 2.5,
                     lineHeight: 1.6,
-                    color: theme.palette.mode === 'dark' ? alpha('#fff', 0.9) : alpha('#000', 0.9)
+                    color: alpha('#000', 0.9)
                   },
                   '& .MuiInputBase-input': {
                     height: '100%',
@@ -413,133 +407,14 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
                 overflow: 'auto',
                 px: 2.5,
                 py: 2.5,
-                color: theme.palette.mode === 'dark' ? alpha('#fff', 0.9) : alpha('#000', 0.9),
-                '& p, & h1, & h2, & h3, & h4, & h5, & h6, & div, & span, & table': {
-                  textAlign: 'left',
-                },
+                textAlign: 'left',
                 '& h1, & h2, & h3, & h4, & h5, & h6': {
-                  fontWeight: 600,
-                  letterSpacing: '-0.02em',
-                  lineHeight: 1.3,
-                  color: theme.palette.mode === 'dark' ? '#fff' : '#000',
+                  fontWeight: 600
                 },
-                '& h1': { fontSize: '1.8rem', marginBottom: '1.2rem', marginTop: '1.2rem' },
-                '& h2': { fontSize: '1.5rem', marginBottom: '1rem', marginTop: '1.5rem' },
-                '& h3': { fontSize: '1.3rem', marginBottom: '0.8rem', marginTop: '1.3rem' },
-                '& h4': { fontSize: '1.15rem', marginBottom: '0.6rem', marginTop: '1.2rem' },
-                '& h5': { fontSize: '1.05rem', marginBottom: '0.5rem', marginTop: '1rem' },
-                '& h6': { fontSize: '1rem', marginBottom: '0.5rem', marginTop: '1rem' },
-                '& p': {
-                  marginTop: 0,
-                  marginBottom: 2,
-                  lineHeight: 1.7,
-                },
-                '& a': {
-                  color: theme.palette.primary.main,
-                  textDecoration: 'none',
-                  transition: 'all 0.1s ease',
-                  borderBottom: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                  paddingBottom: '1px',
-                  '&:hover': {
-                    borderBottomColor: theme.palette.primary.main,
-                  }
-                },
-                '& ul, & ol': {
-                  paddingLeft: 3,
-                  marginBottom: 2,
-                },
-                '& li': {
-                  marginBottom: 1,
-                  paddingLeft: 0.5,
-                  lineHeight: 1.6,
-                },
-                '& blockquote': {
-                  borderLeft: `4px solid ${alpha(theme.palette.primary.main, 0.15)}`,
-                  paddingLeft: 2,
-                  marginLeft: 0,
-                  marginRight: 0,
-                  marginTop: 2,
-                  marginBottom: 2,
-                  color: theme.palette.mode === 'dark' ? alpha('#fff', 0.7) : alpha('#000', 0.7),
-                  fontStyle: 'italic',
-                  backgroundColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.background.paper, 0.2)
-                    : alpha(theme.palette.background.paper, 0.5),
-                  borderRadius: '0 4px 4px 0'
-                },
-                '& code': {
-                  fontFamily: '"SF Mono", "Menlo", "Monaco", "Courier", monospace',
-                  backgroundColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.primary.main, 0.15)
-                    : alpha(theme.palette.primary.main, 0.08),
-                  padding: '3px 6px',
-                  borderRadius: 1,
-                  fontSize: '0.85em',
-                  letterSpacing: '-0.025em',
-                  color: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.primary.light, 0.9)
-                    : theme.palette.primary.main
-                },
-                '& pre': {
-                  backgroundColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.background.default, 0.4)
-                    : alpha(theme.palette.background.default, 0.7),
-                  padding: 2,
-                  borderRadius: '8px',
-                  overflowX: 'auto',
-                  border: '1px solid',
-                  borderColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.divider, 0.05)
-                    : alpha(theme.palette.divider, 0.1),
-                  '& code': {
-                    backgroundColor: 'transparent',
-                    padding: 0,
-                    color: theme.palette.mode === 'dark'
-                      ? alpha('#fff', 0.85)
-                      : alpha('#000', 0.85)
-                  }
-                },
-                '& table': {
-                  width: '100%',
-                  borderCollapse: 'collapse',
-                  marginBottom: 2,
-                  marginTop: 2,
-                  border: '1px solid',
-                  borderColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.divider, 0.1)
-                    : alpha(theme.palette.divider, 0.2),
-                  borderRadius: '8px',
-                  overflow: 'hidden'
-                },
-                '& th': {
-                  padding: '12px 16px',
-                  backgroundColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.background.default, 0.3)
-                    : alpha(theme.palette.background.default, 0.5),
-                  fontWeight: 600,
-                  textAlign: 'left',
-                  fontSize: '0.85rem',
-                  borderBottom: '1px solid',
-                  borderColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.divider, 0.1)
-                    : alpha(theme.palette.divider, 0.2)
-                },
-                '& td': {
-                  padding: '10px 16px',
-                  borderBottom: '1px solid',
-                  borderColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.divider, 0.05)
-                    : alpha(theme.palette.divider, 0.1),
-                  '&:not(:last-child)': {
-                    borderRight: '1px solid',
-                    borderColor: theme.palette.mode === 'dark'
-                      ? alpha(theme.palette.divider, 0.05)
-                      : alpha(theme.palette.divider, 0.1)
-                  }
-                },
-                '& tr:last-child td': {
-                  borderBottom: 'none'
-                }
+                '& h1': { fontSize: '1.5rem' },
+                '& h2': { fontSize: '1.3rem' },
+                '& h3': { fontSize: '1.1rem' },
+                '& h4, & h5, & h6': { fontSize: '1rem' }
               }}>
                 <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
                   {disclosureContent}
@@ -554,9 +429,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
           borderTop: '1px solid',
           borderColor: alpha(theme.palette.divider, 0.1),
           justifyContent: 'space-between',
-          backgroundColor: theme.palette.mode === 'dark'
-            ? alpha(theme.palette.background.paper, 0.4)
-            : alpha(theme.palette.background.default, 0.3)
+          backgroundColor: alpha(theme.palette.background.default, 0.3)
         }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             {/* Terms agreement checkbox */}
@@ -601,7 +474,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
                         color: theme.palette.primary.main,
                         fontWeight: 500,
                         '&:hover': {
-                          color: theme.palette.primary.dark
+                          color: theme.palette.primary.main
                         }
                       }}
                     >
@@ -631,21 +504,15 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
                 borderRadius: '8px',
                 textTransform: 'none',
                 fontWeight: 500,
-                borderColor: theme.palette.mode === 'dark'
-                  ? alpha(theme.palette.divider, 0.2)
-                  : alpha(theme.palette.divider, 0.5),
+                borderColor: alpha(theme.palette.divider, 0.5),
                 px: 2.5,
                 py: 0.75,
                 minHeight: '36px',
                 fontSize: '0.875rem',
                 color: theme.palette.text.primary,
                 '&:hover': {
-                  borderColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.divider, 0.4)
-                    : alpha(theme.palette.divider, 0.8),
-                  backgroundColor: theme.palette.mode === 'dark'
-                    ? alpha(theme.palette.divider, 0.05)
-                    : alpha(theme.palette.divider, 0.08)
+                  borderColor: alpha(theme.palette.divider, 0.8),
+                  backgroundColor: alpha(theme.palette.divider, 0.08)
                 }
               }}
             >
@@ -667,7 +534,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
                 boxShadow: 'none',
                 backgroundColor: theme.palette.primary.main,
                 '&:hover': {
-                  backgroundColor: theme.palette.primary.dark,
+                  backgroundColor: theme.palette.primary.main,
                   boxShadow: `0 4px 8px ${alpha(theme.palette.primary.main, 0.25)}`
                 },
                 '&:active': {
@@ -707,9 +574,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
               backgroundColor: alpha(theme.palette.background.paper, 0.85),
               boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.05)',
               border: '1px solid',
-              borderColor: theme.palette.mode === 'dark'
-                ? alpha(theme.palette.success.main, 0.15)
-                : alpha('#E8FEF0', 0.6),
+              borderColor: alpha('#E8FEF0', 0.6),
               color: theme.palette.text.primary,
               width: 'auto',
               transition: 'all 0.2s ease-out',
@@ -757,9 +622,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
               sx={{
                 fontSize: '0.875rem',
                 fontWeight: 500,
-                color: theme.palette.mode === 'dark'
-                  ? alpha(theme.palette.text.primary, 0.95)
-                  : alpha(theme.palette.text.primary, 0.95),
+                color: alpha(theme.palette.text.primary, 0.95),
                 letterSpacing: '-0.01em',
                 lineHeight: 1.3,
               }}
@@ -809,9 +672,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
               backgroundColor: alpha(theme.palette.background.paper, 0.85),
               boxShadow: '0 4px 20px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.05)',
               border: '1px solid',
-              borderColor: theme.palette.mode === 'dark'
-                ? alpha(theme.palette.error.main, 0.15)
-                : alpha('#FEE8E8', 0.6),
+              borderColor: alpha('#FEE8E8', 0.6),
               color: theme.palette.text.primary,
               width: 'auto',
               transition: 'all 0.2s ease-out',
@@ -850,9 +711,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
               sx={{
                 fontSize: '0.875rem',
                 fontWeight: 500,
-                color: theme.palette.mode === 'dark'
-                  ? alpha(theme.palette.text.primary, 0.95)
-                  : alpha(theme.palette.text.primary, 0.95),
+                color: alpha(theme.palette.text.primary, 0.95),
                 letterSpacing: '-0.01em',
                 lineHeight: 1.3,
               }}

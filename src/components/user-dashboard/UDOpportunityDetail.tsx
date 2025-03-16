@@ -314,50 +314,14 @@ export default function UDOpportunityDetail() {
       >
         <Box
           sx={{
-            color: "#4B5563",
-            lineHeight: 1.7,
-            fontSize: "0.95rem",
             textAlign: 'left',
-            '& p, & h1, & h2, & h3, & h4, & h5, & h6, & div, & span, & table': {
-              textAlign: 'left',
+            '& h1, & h2, & h3, & h4, & h5, & h6': {
+              fontWeight: 600
             },
-            '& p': {
-              marginTop: 0,
-              marginBottom: 2,
-            },
-            '& a': {
-              color: theme.palette.primary.main,
-              textDecoration: 'none',
-              '&:hover': {
-                textDecoration: 'underline',
-              }
-            },
-            '& ul, & ol': {
-              paddingLeft: 3,
-              marginBottom: 2,
-              textAlign: 'left',
-            },
-            '& li': {
-              marginBottom: 1,
-              textAlign: 'left',
-            },
-            '& code': {
-              backgroundColor: alpha(theme.palette.primary.main, 0.08),
-              padding: '2px 4px',
-              borderRadius: 1,
-              fontSize: '0.9em',
-            },
-            '& pre': {
-              backgroundColor: '#f5f7fa',
-              padding: 2,
-              borderRadius: 1,
-              overflowX: 'auto',
-              textAlign: 'left',
-              '& code': {
-                backgroundColor: 'transparent',
-                padding: 0,
-              }
-            }
+            '& h1': { fontSize: '1.5rem' },
+            '& h2': { fontSize: '1.3rem' },
+            '& h3': { fontSize: '1.1rem' },
+            '& h4, & h5, & h6': { fontSize: '1rem' }
           }}
         >
           <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
