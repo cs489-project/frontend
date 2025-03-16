@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Container, TextField, Button, Paper, Tabs, Tab } from "@mui/material";
 import QRCode from "../components/QRCode";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useSnackbar } from "../components/SnackBar";
 
 export default function UserSignUpLogin() {
   const [tab, setTab] = useState(0);
@@ -10,6 +12,7 @@ export default function UserSignUpLogin() {
   const [passwordError, setPasswordError] = useState("");
   const [mfaStage, setMFAStage] = useState(false);
   const navigate = useNavigate();
+  const { showSnackbar } = useSnackbar();
 
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -30,10 +33,31 @@ export default function UserSignUpLogin() {
     }
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setMFAStage(true);
-    // TODO
+
+    if (tab === 0) {
+      try {
+        await axios.post("/api/users/login-password", {
+          email: form.email,
+          password: form.password,
+        });
+        navigate("/user/dashboard/opportunities");
+      } catch (e: any) {
+        showSnackbar(e?.response?.data?.error || "Error Logging in. Try again later", "error");
+      }
+    } else {
+      try {
+        await axios.post("/api/users/register", {
+          name: form.username,
+          email: form.email,
+          password: form.password,
+        });
+        setMFAStage(true);
+      } catch (e: any) {
+        showSnackbar(e?.response?.data?.error || "Error Registering. Try again later", "error");
+      }
+    }
   };
 
   return (
