@@ -32,6 +32,7 @@ export default function OrgDashboard() {
                         <Tab label="Create" />
                     </Tabs>
                     <Box sx={{ flexGrow: 1 }} />
+                    <Typography>Welcome back, Company Name</Typography>
                     <IconButton color="inherit" onClick={handleProfileClick}>
                         <Avatar>
                             <AccountCircleIcon />

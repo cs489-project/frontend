@@ -11,35 +11,38 @@ import UDOpportunityDetail from "./components/user-dashboard/UDOpportunityDetail
 import UDInbox from "./components/user-dashboard/UDInbox";
 import UDLeaderboard from "./components/user-dashboard/UDLeaderboard";
 import UDSettings from "./components/user-dashboard/UDSettings";
+import { SnackbarProvider } from "./components/SnackBar";
 
 function App() {
   return (
-    <Routes>
-      {/* 
+    <SnackbarProvider>
+      <Routes>
+        {/* 
          for all users pages, prepend with /user
          for all company pages, prepend with /org
       */}
-      <Route path="/" element={<UserSignUpLogin />} />
-      <Route path="/user" element={<UserSignUpLogin />} />
+        <Route path="/" element={<UserSignUpLogin />} />
+        <Route path="/user" element={<UserSignUpLogin />} />
 
-      {/* User dashboard routes */}
-      <Route path="/user/dashboard" element={<UDLayout />}>
-        <Route index element={<Navigate to="opportunities" replace />} />
-        <Route path="opportunities" element={<UDOpportunitiesList />} />
-        <Route
-          path="opportunities/:opportunityId"
-          element={<UDOpportunityDetail />}
-        />
-        <Route path="inbox" element={<UDInbox />} />
-        <Route path="leaderboard" element={<UDLeaderboard />} />
-        <Route path="settings" element={<UDSettings />} />
-      </Route>
+        {/* User dashboard routes */}
+        <Route path="/user/dashboard" element={<UDLayout />}>
+          <Route index element={<Navigate to="opportunities" replace />} />
+          <Route path="opportunities" element={<UDOpportunitiesList />} />
+          <Route
+            path="opportunities/:opportunityId"
+            element={<UDOpportunityDetail />}
+          />
+          <Route path="inbox" element={<UDInbox />} />
+          <Route path="leaderboard" element={<UDLeaderboard />} />
+          <Route path="settings" element={<UDSettings />} />
+        </Route>
 
-      <Route path="/org" element={<OrgSignUpLogin />} />
-      <Route path="/org/dashboard" element={<OrgDashboard />} />
-      <Route path="/org/pending" element={<PendingSignUp />} />
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+        <Route path="/org" element={<OrgSignUpLogin />} />
+        <Route path="/org/dashboard" element={<OrgDashboard />} />
+        <Route path="/org/pending" element={<PendingSignUp />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </SnackbarProvider>
   );
 }
 
