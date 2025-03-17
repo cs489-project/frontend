@@ -82,6 +82,7 @@ export default function PostingBuilder() {
                     <MarkdownWrapper value={form.description}></MarkdownWrapper>
                 </div>
             </div>
+            <br />
             <Button fullWidth variant="contained" type="submit" onClick={handleSubmit}>Create Posting</Button>
         </form>
     </div>

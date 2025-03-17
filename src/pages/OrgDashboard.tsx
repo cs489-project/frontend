@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { AppBar, Toolbar, Tabs, Tab, IconButton, Menu, MenuItem, Typography, Box, Avatar } from "@mui/material";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ApartmentIcon from '@mui/icons-material/Apartment';
 import OrgProfile from "../components/OrgProfile";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
@@ -27,7 +27,7 @@ export default function OrgDashboard() {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <OrgProfile open={orgProfile} onClose={() => setOrgProfile(false)} />
-            <AppBar position="static">
+            <AppBar position="fixed">
                 <Toolbar>
                     <Tabs value={currentTab} onChange={handleTabChange} textColor="inherit" indicatorColor="primary">
                         <Tab label="Overview" />
@@ -36,9 +36,9 @@ export default function OrgDashboard() {
                     </Tabs>
                     <Box sx={{ flexGrow: 1 }} />
                     <Typography>Welcome back, Company Name</Typography>
-                    <IconButton color="inherit" onClick={handleProfileClick}>
+                    <IconButton color="inherit" onClick={handleProfileClick} size="large">
                         <Avatar>
-                            <AccountCircleIcon />
+                            <ApartmentIcon />
                         </Avatar>
                     </IconButton>
                     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
@@ -47,7 +47,9 @@ export default function OrgDashboard() {
                     </Menu>
                 </Toolbar>
             </AppBar>
-            <Outlet />
+            <div style={{ flexGrow: 1 }}>
+                <Outlet />
+            </div>
         </Box>
     );
 }

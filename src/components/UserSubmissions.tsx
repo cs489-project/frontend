@@ -79,7 +79,7 @@ export default function UserSubmissions() {
 
 
 
-    return <Box sx={{ display: "flex" }}>
+    return <Box sx={{ display: "flex", height: "100vh" }}>
         {/* Sidebar Drawer */}
         <Drawer
             variant="permanent"
@@ -107,6 +107,7 @@ export default function UserSubmissions() {
             component="main"
             sx={{ flexGrow: 1 }} // Push content to the right
         >
+            <div style={{ height: "64px" }}></div>
             {currentSubmission ? (
                 <>
                     <Card elevation={5} sx={{ borderRadius: 0, padding: 2 }}>
@@ -116,7 +117,9 @@ export default function UserSubmissions() {
                     <MarkdownWrapper value={currentSubmission.submissionDetails}></MarkdownWrapper>
                 </>
             ) : (
-                <div>Select a submission to the left to view the details</div>
+                <>
+                    <div style={{ margin: 24 }}>Click on a record on the left to see the submissions</div>
+                </>
             )}
         </Box>
     </Box>
