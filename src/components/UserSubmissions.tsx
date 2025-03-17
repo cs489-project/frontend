@@ -1,6 +1,24 @@
-import { Box, Card, CardActionArea, Drawer, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, Drawer, Typography } from "@mui/material";
 import { useState } from "react";
 import MarkdownWrapper from "./MarkdownWrapper";
+
+const messages = [
+    {
+        sent_on: "02/25/2025",
+        content: "ASDFASDFASDF",
+        sent_by: "USER"
+    },
+    {
+        sent_on: "02/25/2025",
+        content: "ASDFASDFASDF",
+        sent_by: "USER"
+    },
+    {
+        sent_on: "02/25/2025",
+        content: "ASDFASDFASDF",
+        sent_by: "USER"
+    },
+];
 
 const submissions = [
     {
@@ -74,10 +92,30 @@ const submissions = [
     },
 ];
 
+function SubmissionChat() {
+    const [message, setMessage] = useState("");
+
+    return <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+        <div style={{ height: "64px" }}></div>
+        <div style={{ flexGrow: 1 }}>chatlog</div>
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <textarea
+                style={{ resize: "none", width: 500, height: 200 }}
+                placeholder="Enter your message here, you can use MarkDown and the results are rendered to the right"
+                value={message}
+                required
+                onChange={(e) => setMessage(e.target.value)}
+            ></textarea>
+            <div style={{ flex: 1 }}>
+                <MarkdownWrapper value={message} maxHeight={200}></MarkdownWrapper>
+            </div>
+        </div>
+        <Button fullWidth variant="contained" sx={{ borderRadius: 0 }}>Send Message</Button>
+    </div>;
+}
+
 export default function UserSubmissions() {
     const [currentSubmission, setCurrentSubmission] = useState<null | any>(null);
-
-
 
     return <Box sx={{ display: "flex", height: "100vh" }}>
         {/* Sidebar Drawer */}
@@ -95,8 +133,7 @@ export default function UserSubmissions() {
                         sx={{ border: "1px solid lightgrey", borderRadius: 0, padding: 2 }}
                         onClick={() => setCurrentSubmission(submission)}
                     >
-                        <Typography>{submission.postingId}</Typography>
-                        <Typography>By: {submission.userId}</Typography>
+                        <Typography>{submission.postingId} (By: {submission.userId})</Typography>
                     </CardActionArea>
                 </Card>
             ))}
@@ -107,17 +144,11 @@ export default function UserSubmissions() {
             component="main"
             sx={{ flexGrow: 1 }} // Push content to the right
         >
-            <div style={{ height: "64px" }}></div>
             {currentSubmission ? (
-                <>
-                    <Card elevation={5} sx={{ borderRadius: 0, padding: 2 }}>
-                        <Typography>Submission: {currentSubmission.postingId}</Typography>
-                        <Typography>Submitted By: {currentSubmission.userId}</Typography>
-                    </Card>
-                    <MarkdownWrapper value={currentSubmission.submissionDetails}></MarkdownWrapper>
-                </>
+                <SubmissionChat />
             ) : (
                 <>
+                    <div style={{ height: "64px" }}></div>
                     <div style={{ margin: 24 }}>Click on a record on the left to see the submissions</div>
                 </>
             )}
