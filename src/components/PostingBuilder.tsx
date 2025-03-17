@@ -78,7 +78,7 @@ export default function PostingBuilder() {
                     required
                     onChange={(e) => setForm({ ...form, description: e.target.value })}
                 ></textarea>
-                <div style={{ flex: 1, marginLeft: 8 }}>
+                <div style={{ flex: 1, marginLeft: 8, border: "1px solid black", overflow: "auto" }}>
                     <MarkdownWrapper value={form.description}></MarkdownWrapper>
                 </div>
             </div>
