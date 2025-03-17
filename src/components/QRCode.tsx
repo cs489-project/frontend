@@ -3,19 +3,18 @@ import { Button, Card, CardContent, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useSnackbar } from "./SnackBar";
-import { useNavigate } from "react-router-dom";
 
 type Props = {
   goBack: () => void,
   type: "login" | "signup",
+  onSuccess: () => void,
 }
 
-const QRCodeGenerator = ({ type, goBack }: Props) => {
+const QRCodeGenerator = ({ type, goBack, onSuccess }: Props) => {
   const [oneTimeCode, setOneTimeCode] = useState("");
   const [qrCode, setQRCode] = useState("");
   const [codeErr, setCodeErr] = useState("");
   const { showSnackbar } = useSnackbar();
-  const navigate = useNavigate();
 
   useEffect(() => {
     async function asyncFetchQRCode() {
@@ -33,7 +32,7 @@ const QRCodeGenerator = ({ type, goBack }: Props) => {
         await axios.post("/api/users/login-mfa", {
           code: oneTimeCode
         });
-        navigate("/user/dashboard/opportunities");
+        onSuccess();
       } catch (e: any) {
         showSnackbar(e?.response?.data?.error || "Error verifying one time code. Try again later", "error");
       }
