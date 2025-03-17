@@ -1,32 +1,42 @@
 import { QRCodeSVG } from "qrcode.react";
 import { Button, Card, CardContent, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import * as OTPAuth from "otpauth";
+import axios from "axios";
+import { useSnackbar } from "./SnackBar";
+import { useNavigate } from "react-router-dom";
 
 type Props = {
   goBack: () => void,
-  submit2FA: (code: string) => void,
   type: "login" | "signup",
 }
 
-const QRCodeGenerator = ({ type, goBack, submit2FA }: Props) => {
+const QRCodeGenerator = ({ type, goBack }: Props) => {
   const [oneTimeCode, setOneTimeCode] = useState("");
-  const [twoFAOPT, setTwoFaOpt] = useState<{ secret: string, qrCode: string } | null>(null);
+  const [qrCode, setQRCode] = useState("");
   const [codeErr, setCodeErr] = useState("");
+  const { showSnackbar } = useSnackbar();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const secret = new OTPAuth.Secret().base32;
-    let totp = new OTPAuth.TOTP({
-      secret,
-      label: "2FA",
-      issuer: "ByteBreakers",
-    });
-    setTwoFaOpt({ secret, qrCode: totp.toString() });
+    async function asyncFetchQRCode() {
+      const response = await axios.post("/api/users/register-mfa");
+      setQRCode(response.data.uri);
+    }
+
+    type === "signup" && asyncFetchQRCode();
   }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (oneTimeCode.length) {
-      submit2FA(oneTimeCode)
+      setCodeErr("");
+      try {
+        await axios.post("/api/users/login-mfa", {
+          code: oneTimeCode
+        });
+        navigate("/user/dashboard/opportunities");
+      } catch (e: any) {
+        showSnackbar(e?.response?.data?.error || "Error verifying one time code. Try again later", "error");
+      }
     } else {
       setCodeErr("One time code is required");
     }
@@ -40,7 +50,7 @@ const QRCodeGenerator = ({ type, goBack, submit2FA }: Props) => {
           : "Please enter your Authenticator's one time code"
       }</h4>
       <CardContent>
-        {twoFAOPT?.qrCode && type === "signup" && <QRCodeSVG value={twoFAOPT.qrCode} size={200} />}
+        {qrCode && type === "signup" && <QRCodeSVG value={qrCode} size={200} />}
         <TextField
           label="2FA Code"
           placeholder="Enter the 6 digit Google Authenticator Code Here"

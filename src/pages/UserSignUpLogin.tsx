@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Container, TextField, Button, Paper, Tabs, Tab } from "@mui/material";
 import QRCode from "../components/QRCode";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";
 
@@ -11,7 +10,6 @@ export default function UserSignUpLogin() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [mfaStage, setMFAStage] = useState(false);
-  const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
 
   const handleChange = (e: any) => {
@@ -42,7 +40,7 @@ export default function UserSignUpLogin() {
           email: form.email,
           password: form.password,
         });
-        navigate("/user/dashboard/opportunities");
+        setMFAStage(true);
       } catch (e: any) {
         showSnackbar(e?.response?.data?.error || "Error Logging in. Try again later", "error");
       }
@@ -143,7 +141,6 @@ export default function UserSignUpLogin() {
             <QRCode
               type={tab === 0 ? "login" : "signup"}
               goBack={() => setMFAStage(false)}
-              submit2FA={() => navigate("/user/dashboard/opportunities")}
             />
           )}
         </Paper>
