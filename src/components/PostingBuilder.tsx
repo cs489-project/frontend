@@ -93,7 +93,7 @@ export default function PostingBuilder() {
                 freeSolo
                 options={[]} // No predefined options, since it's free text input
                 value={form.tags}
-                onChange={(_event, newValue) => setForm({ ...form, tags: newValue as string[] })}
+                onChange={(_event, newValue) => setForm({ ...form, tags: newValue })}
                 renderTags={(value, getTagProps) =>
                     value.map((option, index) => (
                         <Chip variant="outlined" label={option} {...getTagProps({ index })} />
