@@ -1,20 +1,24 @@
-import { Button, TextField } from "@mui/material";
+import { Autocomplete, Button, Chip, TextField } from "@mui/material";
 import { useState } from "react";
 import MarkdownWrapper from "./MarkdownWrapper";
 import { useSnackbar } from "./SnackBar";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const INITIAL_STATE = {
     title: "",
     description: "",
     summary: "",
     responsibleDisclosureUrl: "",
+    tags: [] as string[]
 };
 
 export default function PostingBuilder() {
     const [form, setForm] = useState({ ...INITIAL_STATE });
     const { showSnackbar } = useSnackbar();
+    const navigate = useNavigate();
 
-    const handleSubmit = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
 
         if (!form.title) {
@@ -31,10 +35,23 @@ export default function PostingBuilder() {
             return;
         }
         // TODO: CALL API
-        setForm({ ...INITIAL_STATE });
+        try {
+            await axios.post("/api/requests/create-request", {
+                title: form.title,
+                summary: form.summary,
+                description: form.description,
+                disclosure_policy_url: form.responsibleDisclosureUrl,
+                tags: form.tags
+            });
+            showSnackbar("Posting created successfully", "success");
+            navigate("/org/dashboard/")
+            setForm({ ...INITIAL_STATE });
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error creating. Try again later", "error");
+        }
     }
 
-    return <div style={{ padding: 12 }}>
+    return <div style={{ padding: 12, paddingTop: "64px" }}>
         <form>
             <TextField
                 fullWidth
@@ -70,9 +87,25 @@ export default function PostingBuilder() {
                 placeholder="Enter your company's Responsible Disclosure Site Link Here"
                 fullWidth
             ></TextField>
+            <Autocomplete
+                sx={{ minWidth: 400, marginY: 2 }}
+                multiple
+                freeSolo
+                options={[]} // No predefined options, since it's free text input
+                value={form.tags}
+                onChange={(_event, newValue) => setForm({ ...form, tags: newValue as string[] })}
+                renderTags={(value, getTagProps) =>
+                    value.map((option, index) => (
+                        <Chip variant="outlined" label={option} {...getTagProps({ index })} />
+                    ))
+                }
+                renderInput={(params) => (
+                    <TextField {...params} variant="outlined" label="Tags or Keywords" />
+                )}
+            />
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <textarea
-                    style={{ resize: "none", width: 500, height: 400 }}
+                    style={{ resize: "none", width: 500, height: 300 }}
                     placeholder="Enter your detailed description in markdown here, the rendered results will show up to the right"
                     value={form.description}
                     required

@@ -111,7 +111,7 @@ export default function UserSignUpLogin() {
                   {tab === 1 ? "Sign Up" : "Login"}
                 </Button>
               </form>
-            </> : <QRCode type={tab === 0 ? "login" : "signup"} goBack={() => setMFAStage(false)} onSuccess={() => navigate("/org/dashboard")} />
+            </> : <QRCode type={tab === 0 ? "login" : "signup"} goBack={() => setMFAStage(false)} onSuccess={() => navigate("/org/dashboard/")} />
           }
         </Paper>
       </div>
