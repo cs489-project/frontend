@@ -2,6 +2,7 @@ import { Button, Card, Chip, Dialog, Typography } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "./SnackBar";
+import { useNavigate } from "react-router-dom";
 
 const StatusMap: Record<string, "default" | "error" | "info" | "success" | "warning"> = {
     "created": "default",
@@ -29,6 +30,7 @@ function OrgPosting(props: PostingProp) {
     const [open, setOpen] = useState(false);
     const [confirmSubmit, setConfirmSubmit] = useState(false);
     const { showSnackbar } = useSnackbar();
+    const navigate = useNavigate();
 
     const handleConfirm = (confirmSubmission: boolean) => {
         if (confirmSubmission) {
@@ -95,7 +97,7 @@ function OrgPosting(props: PostingProp) {
                 state === "archived" ? <Button variant="contained" color="primary" disabled>Archived</Button> :
                     <>
                         <Button variant="contained" color="primary" disabled={state === "submitted"} onClick={() => handleConfirm(true)}>{state === "submitted" ? "Submitted" : "Submit"}</Button>
-                        <Button sx={{ marginX: 1 }} variant="outlined" color="primary">Edit</Button>
+                        <Button sx={{ marginX: 1 }} variant="outlined" color="primary" onClick={() => navigate(`/org/dashboard/create-edit/${id}`)}>Edit</Button>
                         <Button variant="outlined" color="error" onClick={() => handleConfirm(false)}>Archive</Button>
                     </>
             }

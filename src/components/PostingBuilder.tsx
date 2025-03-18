@@ -1,5 +1,5 @@
 import { Autocomplete, Button, Chip, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MarkdownWrapper from "./MarkdownWrapper";
 import { useSnackbar } from "./SnackBar";
 import axios from "axios";
@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const INITIAL_STATE = {
     title: "",
-    description: "",
+    detailedDescription: "",
     summary: "",
     responsibleDisclosureUrl: "",
     tags: [] as string[]
@@ -18,6 +18,29 @@ export default function PostingBuilder() {
     const { id } = useParams();
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchPostingForEdit = async () => {
+            try {
+                const response = await axios.get("/api/requests/get-by-id", {
+                    params: {
+                        request_id: id
+                    }
+                });
+                const data = response.data.request;
+                setForm({
+                    detailedDescription: data.detailedDescription,
+                    title: data.title,
+                    responsibleDisclosureUrl: data.responsibleDisclosureUrl,
+                    tags: data.tags,
+                    summary: data.previewDescription
+                });
+            } catch (e: any) {
+                showSnackbar(e?.response?.data?.message || "Error fetching data right now. Try again later", "error");
+            }
+        }
+        id && fetchPostingForEdit();
+    }, [id]);
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();
@@ -31,20 +54,34 @@ export default function PostingBuilder() {
         } else if (!form.summary) {
             showSnackbar("Summary of a posting is required", "error");
             return;
-        } else if (!form.description) {
+        } else if (!form.detailedDescription) {
             showSnackbar("Detailed Descriptions to a posting is required", "error");
             return;
         }
-        // TODO: CALL API
+
         try {
-            await axios.post("/api/requests/create-request", {
-                title: form.title,
-                summary: form.summary,
-                description: form.description,
-                disclosure_policy_url: form.responsibleDisclosureUrl,
-                tags: form.tags
-            });
-            showSnackbar("Posting created successfully", "success");
+            if (id) {
+                // update request posting
+                await axios.post("/api/requests/update-request", {
+                    request_id: id,
+                    title: form.title,
+                    summary: form.summary,
+                    description: form.detailedDescription,
+                    disclosure_policy_url: form.responsibleDisclosureUrl,
+                    tags: form.tags
+                });
+                showSnackbar("Posting edited successfully", "success");
+            } else {
+                // creating request posting
+                await axios.post("/api/requests/create-request", {
+                    title: form.title,
+                    summary: form.summary,
+                    description: form.detailedDescription,
+                    disclosure_policy_url: form.responsibleDisclosureUrl,
+                    tags: form.tags
+                });
+                showSnackbar("Posting created successfully", "success");
+            }
             navigate("/org/dashboard/")
             setForm({ ...INITIAL_STATE });
         } catch (e: any) {
@@ -108,16 +145,16 @@ export default function PostingBuilder() {
                 <textarea
                     style={{ resize: "none", width: 500, height: 300 }}
                     placeholder="Enter your detailed description in markdown here, the rendered results will show up to the right"
-                    value={form.description}
+                    value={form.detailedDescription}
                     required
-                    onChange={(e) => setForm({ ...form, description: e.target.value })}
+                    onChange={(e) => setForm({ ...form, detailedDescription: e.target.value })}
                 ></textarea>
                 <div style={{ flex: 1, marginLeft: 8, border: "1px solid black", overflow: "auto" }}>
-                    <MarkdownWrapper value={form.description}></MarkdownWrapper>
+                    <MarkdownWrapper value={form.detailedDescription}></MarkdownWrapper>
                 </div>
             </div>
             <br />
-            <Button fullWidth variant="contained" type="submit" onClick={handleSubmit}>Create Posting</Button>
+            <Button fullWidth variant="contained" type="submit" onClick={handleSubmit}>{id ? "Edit" : "Create"} Posting</Button>
         </form>
     </div>
 }
