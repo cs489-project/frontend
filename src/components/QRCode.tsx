@@ -32,6 +32,7 @@ const QRCodeGenerator = ({ type, goBack, onSuccess }: Props) => {
         await axios.post("/api/users/login-mfa", {
           code: oneTimeCode
         });
+        showSnackbar("Logged in successfully", "success");
         onSuccess();
       } catch (e: any) {
         showSnackbar(e?.response?.data?.error || "Error verifying one time code. Try again later", "error");

@@ -51,7 +51,7 @@ export default function PostingBuilder() {
         }
     }
 
-    return <div style={{ padding: 12, paddingTop: "64px" }}>
+    return <div style={{ padding: 12, paddingTop: "72px" }}>
         <form>
             <TextField
                 fullWidth

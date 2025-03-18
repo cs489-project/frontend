@@ -1,65 +1,78 @@
 import { Card, Chip, Typography } from "@mui/material";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useSnackbar } from "./SnackBar";
+
+const StatusMap: Record<string, "default" | "error" | "info" | "success" | "warning"> = {
+    "created": "default",
+    "submitted": "info",
+    "rejected": "error",
+    "approved": "success",
+    "archived": "warning"
+};
 
 type PostingProp = {
+    id: number,
+    company: string,
+    datePosted: string,
     title: string,
-    overview: string,
-    status: string,
-    date_posted: string,
-    keywords: string[],
+    detailedDescription: string,
+    previewDescription: string,
+    responsibleDisclosureUrl: string,
+    state: string,
+    tags: string[],
 }
 
-const mock_data = [
-    {
-        title: "Bounty number one",
-        overview: "a high level description of the posting",
-        status: "Under Review",
-        date_posted: "02/25/2025",
-        keywords: ["XSS", "Authentication"],
-    }, {
-        title: "Bounty number one",
-        overview: "a high level description of the posting",
-        status: "Under Review",
-        date_posted: "02/25/2025",
-        keywords: ["DDOS", "Session Replay"],
-    }, {
-        title: "Bounty number one",
-        overview: "a high level description of the posting",
-        status: "Under Review",
-        date_posted: "02/25/2025",
-        keywords: ["QA", "CSRF", "SQL Injection", "Broken RBAC"],
-    }
-];
-
 function OrgPosting(props: PostingProp) {
-    const { title, overview, status, date_posted, keywords } = props;
+    const { title, previewDescription, state, datePosted, tags } = props;
 
     return <Card sx={{ m: 2, p: 2, borderRadius: 2 }} elevation={4}>
         <Typography align="left" variant="h6">{title}</Typography>
 
         <div style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography align="left" variant="body2">{overview}</Typography>
-            <div>Last Updated On: {date_posted}</div>
+            <Typography align="left" variant="body2">{previewDescription}</Typography>
+            <Typography variant="body2">Last Updated On: {datePosted}</Typography>
         </div>
-        <div style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center' }}>
+        <div style={{ display: "flex", justifyContent: 'space-between', alignItems: 'center', marginTop: 8 }}>
             <div>
                 {
-                    keywords.map(keyword => {
-                        return <Chip sx={{ marginRight: "8px" }} size="small" label={keyword} color="secondary" variant="outlined" />
+                    tags.map(tag => {
+                        return <Chip sx={{ marginRight: "8px" }} size="small" label={tag} color="secondary" variant="outlined" />
                     })
                 }
             </div>
-            <Chip sx={{ marginLeft: "8px" }} size="small" label={status} color="primary" />
+            <Chip sx={{ marginLeft: "8px" }} size="small" label={state.toUpperCase()} color={StatusMap[state] || "default"} />
         </div>
     </Card>
 }
 
 export default function OrgPostingList() {
-    return <div>
+    const [postings, setPostings] = useState<PostingProp[]>([]);
+    const { showSnackbar } = useSnackbar();
+
+    useEffect(() => {
+        const fetchPostings = async () => {
+            try {
+                const response = await axios.get("/api/requests/get-all");
+                setPostings(response.data.requests);
+            } catch (e: any) {
+                showSnackbar(e?.response?.data?.error || "Error fetching postings right now. Try again later", "error");
+            }
+        };
+
+        fetchPostings();
+    }, []);
+
+
+    return <div style={{ paddingTop: "64px" }}>
         <Typography sx={{ p: 2 }} align="left" variant="h4">Your bounty postings</Typography>
         {
-            mock_data.map(data => {
+            postings.length > 0 ? postings.map(data => {
                 return <OrgPosting {...data} />
-            })
+            }) :
+                <>
+                    <Typography align="center">You have no posting requests so far, go create some!</Typography>
+                </>
         }
     </div>;
 }
