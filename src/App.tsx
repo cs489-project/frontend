@@ -42,8 +42,9 @@ function App() {
 
         <Route path="/org" element={<OrgSignUpLogin />} />
         <Route path="/org/dashboard" element={<OrgDashboard />}>
-          <Route index element={<OrgPostingList />}></Route>
-          <Route path="create" element={<PostingBuilder />}></Route>
+          <Route index element={<Navigate to="/org/dashboard/overview" replace />}></Route>
+          <Route path="overview" element={<OrgPostingList />}></Route>
+          <Route path="create-edit/:id?" element={<PostingBuilder />}></Route>
           <Route path="submissions" element={<UserSubmissions />}></Route>
         </Route>
         <Route path="/org/pending" element={<PendingSignUp />} />

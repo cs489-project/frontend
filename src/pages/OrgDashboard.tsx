@@ -6,11 +6,11 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 export default function OrgDashboard() {
     const location = useLocation();
-    const tabPaths = ["/org/dashboard/", "/org/dashboard/create", "/org/dashboard/submissions"];
+    const tabPaths = ["/org/dashboard/overview", "/org/dashboard/create-edit", "/org/dashboard/submissions"];
     const navigate = useNavigate();
     const [anchorEl, setAnchorEl] = useState(null);
     const [orgProfile, setOrgProfile] = useState(false);
-    const currentTab = tabPaths.indexOf(location.pathname);
+    const currentTab = tabPaths.findIndex(path => location.pathname.startsWith(path));
 
     const handleProfileClick = (event: any) => {
         setAnchorEl(event.currentTarget);
@@ -31,7 +31,7 @@ export default function OrgDashboard() {
                 <Toolbar>
                     <Tabs value={currentTab} onChange={handleTabChange} textColor="inherit" indicatorColor="primary">
                         <Tab label="Overview" />
-                        <Tab label="Create" />
+                        <Tab label="Create/Edit" />
                         <Tab label="Submissions" />
                     </Tabs>
                     <Box sx={{ flexGrow: 1 }} />

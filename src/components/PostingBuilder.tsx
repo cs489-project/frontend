@@ -3,7 +3,7 @@ import { useState } from "react";
 import MarkdownWrapper from "./MarkdownWrapper";
 import { useSnackbar } from "./SnackBar";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const INITIAL_STATE = {
     title: "",
@@ -15,6 +15,7 @@ const INITIAL_STATE = {
 
 export default function PostingBuilder() {
     const [form, setForm] = useState({ ...INITIAL_STATE });
+    const { id } = useParams();
     const { showSnackbar } = useSnackbar();
     const navigate = useNavigate();
 
