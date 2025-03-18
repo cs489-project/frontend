@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, TextField, Button, Paper, Tabs, Tab } from "@mui/material";
+import { Container, TextField, Button, Paper, Tabs, Tab, Typography } from "@mui/material";
 import QRCode from "../components/QRCode";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";
@@ -56,9 +56,9 @@ export default function UserSignUpLogin() {
 
   return (
     <Container>
-      <h1><span style={{ color: "darkblue" }}>Byte</span><span style={{
+      <Typography sx={{ padding: 4 }} variant="h2" align="center"><span style={{ color: "darkblue" }}>Byte</span><span style={{
         color: "purple"
-      }}>Breakers</span></h1>
+      }}>Breakers</span></Typography>
       <h4>Bug bounty platform for your organization to hire top security talents</h4>
       <div style={{ height: "400px" }}>
         <Paper elevation={3} sx={{ width: 400, p: 4, margin: "40px auto" }}>
