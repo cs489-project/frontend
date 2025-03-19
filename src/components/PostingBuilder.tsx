@@ -39,8 +39,10 @@ export default function PostingBuilder() {
                 showSnackbar(e?.response?.data?.message || "Error fetching data right now. Try again later", "error");
             }
         }
-        id && fetchPostingForEdit();
-    }, [id]);
+        if (id) {
+            fetchPostingForEdit();
+        }
+    }, [id, showSnackbar]);
 
     const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault();

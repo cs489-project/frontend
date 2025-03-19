@@ -120,6 +120,7 @@ export default function OrgPostingList() {
 
     useEffect(() => {
         fetchPostings();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 

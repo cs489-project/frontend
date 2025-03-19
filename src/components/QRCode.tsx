@@ -22,7 +22,9 @@ const QRCodeGenerator = ({ type, goBack, onSuccess }: Props) => {
       setQRCode(response.data.uri);
     }
 
-    type === "signup" && asyncFetchQRCode();
+    if (type === "signup") {
+      asyncFetchQRCode();
+    }
   }, []);
 
   const handleSubmit = async () => {
