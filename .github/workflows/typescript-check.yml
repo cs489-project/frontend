@@ -3,7 +3,7 @@ name: TypeScript Check
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   check-typescript:
