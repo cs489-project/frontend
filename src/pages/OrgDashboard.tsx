@@ -21,7 +21,7 @@ export default function OrgDashboard() {
     };
 
     const handleTabChange = (_e: any, value: any) => {
-        navigate(tabPaths[value]); // Navigate to new tab path
+        navigate(tabPaths[value] as string); // Navigate to new tab path
     }
 
     return (

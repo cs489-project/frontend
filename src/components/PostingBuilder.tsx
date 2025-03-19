@@ -138,6 +138,7 @@ export default function PostingBuilder() {
                     ))
                 }
                 renderInput={(params) => (
+                    // @ts-ignore
                     <TextField {...params} variant="outlined" label="Tags or Keywords" />
                 )}
             />
