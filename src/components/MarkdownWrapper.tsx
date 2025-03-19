@@ -1,4 +1,5 @@
-import "github-markdown-css";
+// @ts-ignore
+import "github-markdown-css"
 import ReactMarkdown from "react-markdown";
 import rehypeSanitize from "rehype-sanitize";
 

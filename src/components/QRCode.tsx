@@ -25,7 +25,7 @@ const QRCodeGenerator = ({ type, goBack, onSuccess }: Props) => {
     if (type === "signup") {
       asyncFetchQRCode();
     }
-  }, []);
+  }, [type]);
 
   const handleSubmit = async () => {
     if (oneTimeCode.length) {

@@ -21,7 +21,8 @@ export default function OrgDashboard() {
     };
 
     const handleTabChange = (_e: any, value: number) => {
-        navigate(tabPaths[value]); // Navigate to new tab path
+        // fall back to the overview page for invalid tab indices
+        navigate(tabPaths[value] || "/org/dashboard/overview"); // Navigate to new tab path
     }
 
     return (
