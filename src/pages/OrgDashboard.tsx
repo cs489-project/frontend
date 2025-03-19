@@ -20,7 +20,7 @@ export default function OrgDashboard() {
         setAnchorEl(null);
     };
 
-    const handleTabChange = (_e: never, value: number) => {
+    const handleTabChange = (_e: any, value: number) => {
         navigate(tabPaths[value]); // Navigate to new tab path
     }
 
