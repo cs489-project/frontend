@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function UserSignUpLogin() {
   const [tab, setTab] = useState(0);
-  const [form, setForm] = useState({ orgname: "", email: "", password: "" });
+  const [form, setForm] = useState({ orgname: "", email: "", password: "", logoURL: "" });
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [mfaStage, setMFAStage] = useState(false);
@@ -46,6 +46,7 @@ export default function UserSignUpLogin() {
           name: form.orgname,
           email: form.email,
           password: form.password,
+          logo_url: form.logoURL
         });
         setMFAStage(true);
       } catch (e: any) {
@@ -107,6 +108,19 @@ export default function UserSignUpLogin() {
                   helperText={passwordError}
                   size="small"
                 />
+                {
+                  tab === 1 && <TextField
+                    label="Organization Logo URL"
+                    type="text"
+                    name="logoURL"
+                    fullWidth
+                    margin="normal"
+                    value={form.logoURL}
+                    onChange={handleChange}
+                    required
+                    size="small"
+                  />
+                }
                 <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                   {tab === 1 ? "Sign Up" : "Login"}
                 </Button>
