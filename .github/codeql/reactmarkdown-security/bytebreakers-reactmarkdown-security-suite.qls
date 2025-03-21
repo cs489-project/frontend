@@ -1,0 +1,6 @@
+- description: "ByteBreakers ReactMarkdown Security Queries"
+- queries: .
+- include:
+    kind:
+      - problem
+      - path-problem 
