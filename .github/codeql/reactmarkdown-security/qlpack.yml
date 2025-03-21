@@ -1,8 +1,0 @@
-name: bytebreakers/reactmarkdown-security
-version: 1.0.0
-description: Custom security queries for React Markdown usage
-library: false
-dependencies:
-  codeql/javascript-queries: "*"
-suites: 
-  - bytebreakers-reactmarkdown-security-suite 
