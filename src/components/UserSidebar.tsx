@@ -13,10 +13,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
 import Badge from "@mui/material/Badge";
 import IconButton from "@mui/material/IconButton";
-
 import TrackChangesIcon from "@mui/icons-material/TrackChanges";
 import InboxIcon from "@mui/icons-material/Inbox";
-import LeaderboardIcon from "@mui/icons-material/Leaderboard";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -36,7 +34,6 @@ export default function UserSidebar({ selectedItem, onSelectItem }: UserSidebarP
   const navItems = [
     { text: "Opportunities", icon: <TrackChangesIcon />, badge: 0 },
     { text: "Inbox", icon: <InboxIcon />, badge: 5 },
-    { text: "Leaderboard", icon: <LeaderboardIcon />, badge: 0 },
   ];
 
   return (

@@ -9,7 +9,6 @@ import OrgDashboard from "./pages/OrgDashboard";
 import UDOpportunitiesList from "./components/user-dashboard/UDOpportunitiesList";
 import UDOpportunityDetail from "./components/user-dashboard/UDOpportunityDetail";
 import UDInbox from "./components/user-dashboard/UDInbox";
-import UDLeaderboard from "./components/user-dashboard/UDLeaderboard";
 import UDSettings from "./components/user-dashboard/UDSettings";
 import { SnackbarProvider } from "./components/SnackBar";
 import OrgPostingList from "./components/OrgPostingList";
@@ -36,7 +35,6 @@ function App() {
             element={<UDOpportunityDetail />}
           />
           <Route path="inbox" element={<UDInbox />} />
-          <Route path="leaderboard" element={<UDLeaderboard />} />
           <Route path="settings" element={<UDSettings />} />
         </Route>
 
