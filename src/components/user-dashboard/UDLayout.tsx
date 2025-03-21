@@ -62,9 +62,6 @@ export default function UDLayout({ defaultTab = "Opportunities" }: UDLayoutProps
       case "Inbox":
         navigate("/user/dashboard/inbox");
         break;
-      case "Leaderboard":
-        navigate("/user/dashboard/leaderboard");
-        break;
       case "Settings":
         navigate("/user/dashboard/settings");
         break;
