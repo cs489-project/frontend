@@ -1,4 +1,0 @@
-name: "ReactMarkdown - Sanitize"
-
-queries:
-  - uses: ./github/codeql/react-markdown-query.ql
