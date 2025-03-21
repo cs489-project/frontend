@@ -21,8 +21,6 @@ export default function UDLayout({ defaultTab = "Opportunities" }: UDLayoutProps
       setSelectedItem("Opportunities");
     } else if (location.pathname.includes("/user/dashboard/inbox")) {
       setSelectedItem("Inbox");
-    } else if (location.pathname.includes("/user/dashboard/leaderboard")) {
-      setSelectedItem("Leaderboard");
     } else if (location.pathname.includes("/user/dashboard/settings")) {
       setSelectedItem("Settings");
     }
