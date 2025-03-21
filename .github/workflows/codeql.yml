@@ -77,7 +77,7 @@ jobs:
 
           # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
           # queries: security-extended,security-and-quality
-          queries: security-extended,security-and-quality,+./.github/react-markdown-query.ql
+          queries: security-and-quality,security-extended,./.github/react-markdown-query.ql
 
       # If the analyze step fails for one of the languages you are analyzing with
       # "We were unable to automatically build your code", modify the matrix above
