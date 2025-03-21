@@ -1,27 +1,10 @@
 import javascript
 
-/**
- * Flags <ReactMarkdown> elements that:
- * - are missing the rehypePlugins prop
- * - or include rehypePlugins but not rehypeSanitize
- */
-from JSXElement rm, JSXAttribute pluginsAttr
+from JSXElement e
 where
-  rm.getName() = "ReactMarkdown" and
+  e.getTagName() = "ReactMarkdown" and
   (
-    // rehypePlugins not present at all
-    not exists(
-      JSXAttribute a |
-      rm.getAttribute(a) and
-      a.getName() = "rehypePlugins"
-    )
-    or
-    (
-      rm.getAttribute(pluginsAttr) and
-      pluginsAttr.getName() = "rehypePlugins" and
-      not exists(
-        pluginsAttr.getInitializer().(Expr).getAChild*().(Expr).toString() = "rehypeSanitize"
-      )
-    )
+    not e.hasAttribute("rehypePlugins") or
+    not e.getAttribute("rehypePlugins").getInitializer().toString().matches("%rehypeSanitize%")
   )
-select rm, "ReactMarkdown is missing rehypeSanitize in rehypePlugins."
+select e, "ReactMarkdown element must include rehypeSanitize in its rehypePlugins attribute."
