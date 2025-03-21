@@ -13,7 +13,9 @@ export default function MarkdownWrapper(props: Props) {
       className="markdown-body"
       style={{ height: "100%", textAlign: "left" }}
     >
-      <ReactMarkdown>{props.value}</ReactMarkdown>
+      <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+        {props.value}
+      </ReactMarkdown>
     </div>
   );
 }
