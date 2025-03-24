@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Container, TextField, Button, Paper, Tabs, Tab, Typography, Link } from "@mui/material";
 import QRCode from "../components/QRCode";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function UserSignUpLogin() {
   const [tab, setTab] = useState(0);
@@ -13,6 +13,13 @@ export default function UserSignUpLogin() {
   const [mfaStage, setMFAStage] = useState(false);
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("noSession")) {
+      showSnackbar("Session expired. Please re-authenticate", "error");
+    }
+  }, []);
 
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });

@@ -17,11 +17,11 @@ const AxiosInterceptorSetup = () => {
 
                 if (error.response?.status === 400 && error.response?.data?.error === "Invalid session") {
                     if (meData.role === "researcher") {
-                        navigate("/");
+                        navigate("/?noSession=1");
                     } else {
-                        navigate("/org");
+                        navigate("/org?noSession=1");
                     }
-                    return new Promise(() => {});
+                    return new Promise(() => { });
                 }
                 return Promise.reject(error);
             }
