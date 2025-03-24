@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Container, TextField, Button, Paper, Tabs, Tab, Typography } from "@mui/material";
+import { Container, TextField, Button, Paper, Tabs, Tab, Typography, Link } from "@mui/material";
 import QRCode from "../components/QRCode";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";
@@ -68,6 +68,7 @@ export default function UserSignUpLogin() {
               <Tab label="Login" />
               <Tab label="Sign Up" />
             </Tabs>
+              <Typography align='center' sx={{ m: 1 }}>Click <Link href="/">here</Link> to {tab === 0 ? "log in" : "sign up"} as User</Typography>
               <form onSubmit={handleSubmit} style={{ width: "300px", margin: 'auto' }}>
                 {
                   tab === 1 && <TextField

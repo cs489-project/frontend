@@ -3,6 +3,9 @@ import { AppBar, Toolbar, Tabs, Tab, IconButton, Menu, MenuItem, Typography, Box
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import OrgProfile from "../components/OrgProfile";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { useUserInfoContext } from "../utils/Context";
+import axios from "axios";
+import { useSnackbar } from "../components/SnackBar";
 
 export default function OrgDashboard() {
     const location = useLocation();
@@ -11,6 +14,8 @@ export default function OrgDashboard() {
     const [anchorEl, setAnchorEl] = useState(null);
     const [orgProfile, setOrgProfile] = useState(false);
     const currentTab = tabPaths.findIndex(path => location.pathname.startsWith(path));
+    const meData = useUserInfoContext();
+    const { showSnackbar } = useSnackbar();
 
     const handleProfileClick = (event: any) => {
         setAnchorEl(event.currentTarget);
@@ -25,6 +30,16 @@ export default function OrgDashboard() {
         navigate(tabPaths[value] || "/org/dashboard/overview"); // Navigate to new tab path
     }
 
+    const handleLogOut = async () => {
+        try {
+            await axios.post("/api/users/logout");
+        } catch (e) {
+            console.log(e);
+        }
+        showSnackbar("Successfully logged out", "success");
+        navigate("/org");
+    };
+
     return (
         <Box sx={{ flexGrow: 1 }}>
             <OrgProfile open={orgProfile} onClose={() => setOrgProfile(false)} />
@@ -36,7 +51,7 @@ export default function OrgDashboard() {
                         <Tab label="Submissions" />
                     </Tabs>
                     <Box sx={{ flexGrow: 1 }} />
-                    <Typography>Welcome back, Company Name</Typography>
+                    <Typography>Welcome back, {meData.name}</Typography>
                     <IconButton color="inherit" onClick={handleProfileClick} size="large">
                         <Avatar>
                             <ApartmentIcon />
@@ -44,7 +59,7 @@ export default function OrgDashboard() {
                     </IconButton>
                     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
                         <MenuItem onClick={() => setOrgProfile(true)}>Profile</MenuItem>
-                        <MenuItem onClick={handleClose}>Logout</MenuItem>
+                        <MenuItem onClick={handleLogOut}>Logout</MenuItem>
                     </Menu>
                 </Toolbar>
             </AppBar>

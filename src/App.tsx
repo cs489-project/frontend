@@ -14,40 +14,45 @@ import { SnackbarProvider } from "./components/SnackBar";
 import OrgPostingList from "./components/OrgPostingList";
 import PostingBuilder from "./components/PostingBuilder";
 import UserSubmissions from "./components/UserSubmissions";
+import { UserInfoProvider } from "./utils/Context";
+import AxiosInterceptorSetup from "./utils/AxiosInterceptor";
 
 function App() {
   return (
     <SnackbarProvider>
-      <Routes>
-        {/* 
-         for all users pages, prepend with /user
-         for all company pages, prepend with /org
-      */}
-        <Route path="/" element={<UserSignUpLogin />} />
-        <Route path="/user" element={<UserSignUpLogin />} />
+      <AxiosInterceptorSetup />
+      <UserInfoProvider>
+        <Routes>
+          {/* 
+            for all users pages, prepend with /user
+            for all company pages, prepend with /org
+          */}
+          <Route path="/" element={<UserSignUpLogin />} />
+          <Route path="/user" element={<UserSignUpLogin />} />
 
-        {/* User dashboard routes */}
-        <Route path="/user/dashboard" element={<UDLayout />}>
-          <Route index element={<Navigate to="opportunities" replace />} />
-          <Route path="opportunities" element={<UDOpportunitiesList />} />
-          <Route
-            path="opportunities/:opportunityId"
-            element={<UDOpportunityDetail />}
-          />
-          <Route path="inbox" element={<UDInbox />} />
-          <Route path="settings" element={<UDSettings />} />
-        </Route>
+          {/* User dashboard routes */}
+          <Route path="/user/dashboard" element={<UDLayout />}>
+            <Route index element={<Navigate to="opportunities" replace />} />
+            <Route path="opportunities" element={<UDOpportunitiesList />} />
+            <Route
+              path="opportunities/:opportunityId"
+              element={<UDOpportunityDetail />}
+            />
+            <Route path="inbox" element={<UDInbox />} />
+            <Route path="settings" element={<UDSettings />} />
+          </Route>
 
-        <Route path="/org" element={<OrgSignUpLogin />} />
-        <Route path="/org/dashboard" element={<OrgDashboard />}>
-          <Route index element={<Navigate to="/org/dashboard/overview" replace />}></Route>
-          <Route path="overview" element={<OrgPostingList />}></Route>
-          <Route path="create-edit/:id?" element={<PostingBuilder />}></Route>
-          <Route path="submissions" element={<UserSubmissions />}></Route>
-        </Route>
-        <Route path="/org/pending" element={<PendingSignUp />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+          <Route path="/org" element={<OrgSignUpLogin />} />
+          <Route path="/org/dashboard" element={<OrgDashboard />}>
+            <Route index element={<Navigate to="/org/dashboard/overview" replace />}></Route>
+            <Route path="overview" element={<OrgPostingList />}></Route>
+            <Route path="create-edit/:id?" element={<PostingBuilder />}></Route>
+            <Route path="submissions" element={<UserSubmissions />}></Route>
+          </Route>
+          <Route path="/org/pending" element={<PendingSignUp />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </UserInfoProvider>
     </SnackbarProvider>
   );
 }

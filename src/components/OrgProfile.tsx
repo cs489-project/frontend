@@ -1,5 +1,6 @@
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Avatar, Typography, Paper, Divider, TextField } from "@mui/material";
 import { FormEvent, useState } from "react";
+import { useUserInfoContext } from "../utils/Context";
 
 type Props = {
     open: boolean,
@@ -11,6 +12,7 @@ export default function OrgProfile({ open, onClose }: Props) {
     const [form, setForm] = useState({ oldPassword: "", newPassword: "", confirmNewPassword: "" });
     const [newPwError, setNewPwError] = useState("");
     const [confirmNewPwError, setConfirmNewPwError] = useState("");
+    const meData = useUserInfoContext();
 
     const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -87,9 +89,9 @@ export default function OrgProfile({ open, onClose }: Props) {
                                 <Avatar src={"https://i.imgur.com/24AiUWA.jpeg"} sx={{ width: 80, height: 80 }} />
                                 <Divider orientation="vertical" flexItem />
                                 <div>
-                                    <Typography variant="h6">Org name</Typography>
+                                    <Typography variant="h6">{meData.name}</Typography>
                                     <br />
-                                    <Typography variant="body1" color="textSecondary">Org email</Typography>
+                                    <Typography variant="body1" color="textSecondary">{meData.email}</Typography>
                                 </div>
                             </div>
                         </DialogContent>
