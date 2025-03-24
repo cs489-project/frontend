@@ -1,18 +1,19 @@
-import { Avatar, Box, Button, Card, CardActionArea, Drawer, Paper, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Avatar, Box, Button, Card, CardActionArea, Drawer, Paper, Tooltip, Typography } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import MarkdownWrapper from "./MarkdownWrapper";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ApartmentIcon from '@mui/icons-material/Apartment';
 import axios from "axios";
 import { useSnackbar } from "./SnackBar";
+import { useUserInfoContext } from "../utils/Context";
 
 type Report = {
     commentCount: number,
     id: number,
     jobRequestTitle: string,
     logo: string,
-    status: string, // TODO type here
-    unread: true, // how to impl this?
+    status: "submitted" | "rejected" | "accepted", // TODO type here
+    unread: true, // TODO impl this
     user: string
 };
 
@@ -25,43 +26,68 @@ type Comment = {
 type Props = {
     report: Report
 }
+
 function SubmissionChat(props: Props) {
     const { report } = props;
+    const meData = useUserInfoContext();
     const { showSnackbar } = useSnackbar();
     const [comments, setComments] = useState<Comment[]>([]);
     const [message, setMessage] = useState("");
+    const chatRef = useRef<HTMLDivElement | null>(null);
+
+    const getComments = async () => {
+        try {
+            const response = await axios.get("/api/reports/get-by-id", {
+                params: {
+                    report_id: report.id
+                }
+            });
+            setComments(response.data.report.comments);
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error getting data . Try again later", "error");
+        }
+    }
 
     useEffect(() => {
-        async function getComments() {
-            try {
-                const response = await axios.get("/api/reports/get-by-id", {
-                    params: {
-                        report_id: report.id
-                    }
-                });
-                setComments(response.data.report.comments);
-            } catch (e: any) {
-                showSnackbar(e?.response?.data?.error || "Error getting data . Try again later", "error");
-            }
-        }
         getComments();
     }, [report]);
 
+    useEffect(() => {
+        if (chatRef.current) {
+            chatRef.current.scrollTop = chatRef.current.scrollHeight;
+        }
+    }, [comments]);
+
+    const sendMessage = async () => {
+        try {
+            await axios.post("/api/reports/comment", {
+                report_id: report.id,
+                content: message
+            });
+            setMessage("");
+            getComments();
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error sending message. Try again later", "error");
+        }
+    }
+
     return <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <div style={{ flexGrow: 1, padding: "64px 0 16px", overflowY: "auto" }}>
+        <div style={{ flexGrow: 1, padding: "64px 0 16px", overflowY: "auto" }} ref={chatRef}>
             {
                 comments.map(comment => {
-                    return <div style={{ display: "flex", flexDirection: comment.senderName === "USER" ? "row" : "row-reverse", padding: "16px" }}>
+                    return <div style={{ display: "flex", flexDirection: comment.senderName === meData.name ? "row-reverse" : "row", padding: "16px" }}>
                         <div style={{ padding: "0 16px" }}>
                             <Avatar>
-                                {comment.senderName === "USER" ? <AccountCircleIcon /> : <ApartmentIcon />}
+                                {comment.senderName === meData.name ? <ApartmentIcon /> : <AccountCircleIcon />}
                             </Avatar>
                         </div>
                         <div>
                             <Paper sx={{ flexGrow: 1, overflow: "auto", maxWidth: 600 }} elevation={2}>
-                                <div style={{ padding: 8 }}>
-                                    <MarkdownWrapper value={comment.message} />
-                                </div>
+                                <Tooltip title={comment.timestamp}>
+                                    <div style={{ padding: 8 }}>
+                                        <MarkdownWrapper value={comment.message} />
+                                    </div>
+                                </Tooltip>
                             </Paper>
                         </div>
                         <div style={{ width: "100px" }}></div>
@@ -77,11 +103,11 @@ function SubmissionChat(props: Props) {
                 required
                 onChange={(e) => setMessage(e.target.value)}
             ></textarea>
-            <div style={{ flex: 1, border: "1px solid black" }}>
+            <div style={{ flex: 1, border: "1px solid black", overflow: "auto", height: "200px" }}>
                 <MarkdownWrapper value={message}></MarkdownWrapper>
             </div>
         </div>
-        <Button fullWidth variant="contained" sx={{ borderRadius: 0 }}>Send Message</Button>
+        <Button onClick={sendMessage} fullWidth variant="contained" sx={{ borderRadius: 0 }}>Send Message</Button>
     </div>;
 }
 
