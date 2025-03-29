@@ -7,14 +7,21 @@ type MeType = {
     auth_stage: string,
     email: string,
     name: string,
-    role: "organization" | "researcher"
+    role: "organization" | "researcher",
+    metadata: {
+        approved: boolean,
+        logo_url?: string
+    }
 }
 
 const DEFAULT = {
     auth_stage: "password",
     email: "",
     name: "",
-    role: "researcher"
+    role: "researcher",
+    metadata: {
+        approved: false,
+    }
 } satisfies MeType;
 
 // Create the context

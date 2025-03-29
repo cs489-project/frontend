@@ -1,8 +1,6 @@
 import { Avatar, Box, Button, Card, CardActionArea, Drawer, Paper, Tooltip, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import MarkdownWrapper from "./MarkdownWrapper";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ApartmentIcon from '@mui/icons-material/Apartment';
 import axios from "axios";
 import { useSnackbar } from "./SnackBar";
 import { useUserInfoContext } from "../utils/Context";
@@ -77,9 +75,12 @@ function SubmissionChat(props: Props) {
                 comments.map(comment => {
                     return <div style={{ display: "flex", flexDirection: comment.senderName === meData.name ? "row-reverse" : "row", padding: "16px" }}>
                         <div style={{ padding: "0 16px" }}>
-                            <Avatar>
-                                {comment.senderName === meData.name ? <ApartmentIcon /> : <AccountCircleIcon />}
-                            </Avatar>
+                            <Tooltip title={comment.senderName}>
+                                <Avatar
+                                    src={comment.senderName === meData.name ? (meData.metadata.logo_url || "") : ""}
+                                    alt={comment.senderName === meData.name ? meData.name : ""}
+                                />
+                            </Tooltip>
                         </div>
                         <div>
                             <Paper sx={{ flexGrow: 1, overflow: "auto", maxWidth: 600 }} elevation={2}>
