@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 type MeType = {
-    auth_stage: string,
+    auth_stage: "password" | "pending_mfa" | "mfa_verified" | "email_verified",
     email: string,
     name: string,
     role: "organization" | "researcher",

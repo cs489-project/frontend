@@ -1,4 +1,4 @@
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Avatar, Typography, Paper, Divider, TextField } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions, Button, Avatar, Typography, Paper, Divider, TextField, Chip } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { useUserInfoContext } from "../utils/Context";
 import axios from "axios";
@@ -72,6 +72,17 @@ export default function OrgProfile({ open, onClose }: Props) {
             setPageMode("main");
         } catch (e: any) {
             showSnackbar(e?.response?.data?.error || "Error updating Logo URL. Try again later", "error");
+        }
+    };
+
+    const verifyEmail = async () => {
+        try {
+            await axios.post("/api/users/send-verification-email");
+            onClose();
+            setPageMode("main");
+            showSnackbar("Verification email sent. Check your inbox and spam folder", "success");
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error sending email. Try again later", "error");
         }
     };
 
@@ -151,9 +162,15 @@ export default function OrgProfile({ open, onClose }: Props) {
                                         <Avatar src={meData.metadata.logo_url || ""} alt={meData.name} sx={{ width: 80, height: 80 }} />
                                         <Divider orientation="vertical" flexItem />
                                         <div>
-                                            <Typography variant="h6">{meData.name}</Typography>
+                                            <Typography align="center" variant="h6">{meData.name}</Typography>
                                             <br />
-                                            <Typography variant="body1" color="textSecondary">{meData.email}</Typography>
+                                            <div style={{ display: "flex" }}>
+                                                <Typography variant="body1" color="textSecondary">{meData.email}</Typography>
+                                                <Chip sx={{ marginLeft: 2 }} size="small" color={meData.auth_stage === "email_verified" ? "success" : "warning"} label={meData.auth_stage === "email_verified" ? "Verified" : "Unverified"} />
+                                            </div>
+                                            {
+                                                meData.auth_stage !== "email_verified" && <Button onClick={verifyEmail} color="primary" variant="text">Verify Email</Button>
+                                            }
                                         </div>
                                     </div>
                                 </DialogContent>
