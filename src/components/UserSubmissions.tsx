@@ -11,7 +11,7 @@ type Report = {
     jobRequestTitle: string,
     logo: string,
     status: "submitted" | "rejected" | "accepted",
-    unread: true, // TODO impl this
+    unread: true,
     user: string
 };
 
