@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CardActionArea, Drawer, Paper, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardActionArea, Chip, Drawer, Paper, Tooltip, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import MarkdownWrapper from "./MarkdownWrapper";
 import axios from "axios";
@@ -10,7 +10,7 @@ type Report = {
     id: number,
     jobRequestTitle: string,
     logo: string,
-    status: "submitted" | "rejected" | "accepted", // TODO type here
+    status: "submitted" | "rejected" | "accepted",
     unread: true, // TODO impl this
     user: string
 };
@@ -22,18 +22,20 @@ type Comment = {
 }
 
 type Props = {
-    report: Report
+    report: Report,
+    refetch: () => void,
 }
 
 function SubmissionChat(props: Props) {
-    const { report } = props;
+    const { report, refetch } = props;
     const meData = useUserInfoContext();
+    const [reportStatus, setReportStatus] = useState<Report["status"]>("submitted");
     const { showSnackbar } = useSnackbar();
     const [comments, setComments] = useState<Comment[]>([]);
     const [message, setMessage] = useState("");
     const chatRef = useRef<HTMLDivElement | null>(null);
 
-    const getComments = async () => {
+    const getDetailedReport = async () => {
         try {
             const response = await axios.get("/api/reports/get-by-id", {
                 params: {
@@ -41,13 +43,14 @@ function SubmissionChat(props: Props) {
                 }
             });
             setComments(response.data.report.comments);
+            setReportStatus(response.data.report.status);
         } catch (e: any) {
             showSnackbar(e?.response?.data?.error || "Error getting data . Try again later", "error");
         }
     }
 
     useEffect(() => {
-        getComments();
+        getDetailedReport();
     }, [report]);
 
     useEffect(() => {
@@ -63,9 +66,29 @@ function SubmissionChat(props: Props) {
                 content: message
             });
             setMessage("");
-            getComments();
+            getDetailedReport();
         } catch (e: any) {
             showSnackbar(e?.response?.data?.error || "Error sending message. Try again later", "error");
+        }
+    }
+
+    const evaluateReport = async (approve: boolean) => {
+        try {
+            if (approve) {
+                await axios.post('/api/reports/accept-report', {
+                    report_id: report.id
+                });
+                showSnackbar("Report Accepted", "success");
+            } else {
+                await axios.post('/api/reports/reject-report', {
+                    report_id: report.id
+                });
+                showSnackbar("Report Rejected", "success");
+            }
+            refetch();
+            getDetailedReport();
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error fetching postings right now. Try again later", "error");
         }
     }
 
@@ -108,7 +131,11 @@ function SubmissionChat(props: Props) {
                 <MarkdownWrapper value={message}></MarkdownWrapper>
             </div>
         </div>
-        <Button onClick={sendMessage} fullWidth variant="contained" sx={{ borderRadius: 0 }}>Send Message</Button>
+        <div style={{ display: "flex" }}>
+            <Button onClick={sendMessage} variant="contained" sx={{ borderRadius: 0, flexGrow: 1 }}>Send Message</Button>
+            <Button onClick={() => evaluateReport(true)} disabled={reportStatus !== 'submitted'} variant="contained" sx={{ borderRadius: 0 }} color="success">Approve</Button>
+            <Button onClick={() => evaluateReport(false)} disabled={reportStatus !== 'submitted'} variant="contained" sx={{ borderRadius: 0 }} color="error">Reject</Button>
+        </div>
     </div>;
 }
 
@@ -117,15 +144,15 @@ export default function UserSubmissions() {
     const [reports, setReports] = useState<Report[]>([]);
     const { showSnackbar } = useSnackbar();
 
-    useEffect(() => {
-        async function getReports() {
-            try {
-                const response = await axios.get("/api/reports/get-all");
-                setReports(response.data.reports);
-            } catch (e: any) {
-                showSnackbar(e?.response?.data?.error || "Error getting data. Try again later", "error");
-            }
+    async function getReports() {
+        try {
+            const response = await axios.get("/api/reports/get-all");
+            setReports(response.data.reports.sort((a: Report, b: Report) => a.id - b.id));
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error getting data. Try again later", "error");
         }
+    }
+    useEffect(() => {
         getReports();
     }, []);
 
@@ -145,7 +172,10 @@ export default function UserSubmissions() {
                         sx={{ border: "1px solid lightgrey", borderRadius: 0, padding: 2 }}
                         onClick={() => setCurrentReport(report)}
                     >
-                        <Typography>{report.jobRequestTitle} (By: {report.user})</Typography>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <Typography>{report.jobRequestTitle} (By: {report.user})</Typography>
+                            <Chip color={report.status === "accepted" ? "success" : (report.status === "rejected" ? "error" : "info")} label={report.status} size="small" />
+                        </div>
                     </CardActionArea>
                 </Card>
             ))}
@@ -157,7 +187,7 @@ export default function UserSubmissions() {
             sx={{ flexGrow: 1 }} // Push content to the right
         >
             {currentReport ? (
-                <SubmissionChat report={currentReport} />
+                <SubmissionChat report={currentReport} refetch={getReports} />
             ) : (
                 <>
                     <div style={{ height: "64px" }}></div>
