@@ -44,6 +44,7 @@ function SubmissionChat(props: Props) {
             });
             setComments(response.data.report.comments);
             setReportStatus(response.data.report.status);
+            refetch();
         } catch (e: any) {
             showSnackbar(e?.response?.data?.error || "Error getting data . Try again later", "error");
         }
@@ -172,9 +173,12 @@ export default function UserSubmissions() {
                         sx={{ border: "1px solid lightgrey", borderRadius: 0, padding: 2 }}
                         onClick={() => setCurrentReport(report)}
                     >
+                        <Typography>{report.jobRequestTitle} (By: {report.user})</Typography>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                            <Typography>{report.jobRequestTitle} (By: {report.user})</Typography>
-                            <Chip color={report.status === "accepted" ? "success" : (report.status === "rejected" ? "error" : "info")} label={report.status} size="small" />
+                            <Chip color={report.status === "accepted" ? "success" : (report.status === "rejected" ? "error" : "info")} label={report.status.toUpperCase()} size="small" />
+                            {
+                                report.unread && <Chip color="error" label={"UNREAD"} size="small"></Chip>
+                            }
                         </div>
                     </CardActionArea>
                 </Card>

@@ -97,7 +97,7 @@ function OrgPosting(props: PostingProp) {
                 state === "archived" ? <Button variant="contained" color="primary" disabled>Archived</Button> :
                     <>
                         <Button variant="contained" color="primary" disabled={state === "submitted"} onClick={() => handleConfirm(true)}>{state === "submitted" ? "Submitted" : "Submit"}</Button>
-                        <Button sx={{ marginX: 1 }} variant="outlined" color="primary" onClick={() => navigate(`/org/dashboard/create-edit/${id}`)}>Edit</Button>
+                        <Button disabled={state === "submitted"} sx={{ marginX: 1 }} variant="outlined" color="primary" onClick={() => navigate(`/org/dashboard/create-edit/${id}`)}>Edit</Button>
                         <Button variant="outlined" color="error" onClick={() => handleConfirm(false)}>Archive</Button>
                     </>
             }
