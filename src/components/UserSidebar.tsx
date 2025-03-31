@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
@@ -12,13 +12,13 @@ import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Divider from "@mui/material/Divider";
-import Badge from "@mui/material/Badge";
 import IconButton from "@mui/material/IconButton";
 import TrackChangesIcon from "@mui/icons-material/TrackChanges";
 import InboxIcon from "@mui/icons-material/Inbox";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutOutlinedIcon from "@mui/icons-material/LogoutOutlined";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { userService, User } from "../services/userService";
 
 const drawerWidth = 280;
 
@@ -33,6 +33,24 @@ export default function UserSidebar() {
   const location = useLocation();
   const profileRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [userData, setUserData] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch user data when component mounts
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const user = await userService.getCurrentUser();
+        setUserData(user);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   // Get current tab from URL
   const getCurrentTab = () => {
@@ -44,10 +62,10 @@ export default function UserSidebar() {
 
   const selectedItem = getCurrentTab();
 
-  // Navigation items
+  // Navigation items - removed badge count as requested
   const navItems = [
-    { text: "Opportunities", icon: <TrackChangesIcon />, badge: 0 },
-    { text: "Inbox", icon: <InboxIcon />, badge: 5 },
+    { text: "Opportunities", icon: <TrackChangesIcon /> },
+    { text: "Inbox", icon: <InboxIcon /> },
   ];
 
   // Handle tab change
@@ -60,6 +78,30 @@ export default function UserSidebar() {
     if (path) {
       navigate(path);
     }
+  };
+
+  // Handle logout
+  const handleLogout = async () => {
+    try {
+      const success = await userService.logout();
+      if (success) {
+        // Redirect to login page after logout
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
+  // Generate initials for avatar fallback
+  const getInitials = (name: string) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map(word => word[0])
+      .join("")
+      .toUpperCase()
+      .substring(0, 2);
   };
 
   return (
@@ -123,7 +165,7 @@ export default function UserSidebar() {
       {/* Navigation */}
       <Box sx={{ px: 2 }}>
         <List sx={{ p: 0 }}>
-          {navItems.map(({ text, icon, badge }) => (
+          {navItems.map(({ text, icon }) => (
             <ListItem key={text} disablePadding sx={{ mb: 0.5 }}>
               <ListItemButton
                 onClick={() => handleTabChange(text)}
@@ -170,26 +212,6 @@ export default function UserSidebar() {
                     }}
                   />
                 </Box>
-
-                {badge > 0 && text === "Inbox" && (
-                  <Badge
-                    badgeContent={badge}
-                    sx={{
-                      mr: 0.5,
-                      "& .MuiBadge-badge": {
-                        fontSize: "0.65rem",
-                        height: 18,
-                        minWidth: 18,
-                        paddingRight: "8px",
-                        paddingLeft: "8px",
-                        borderRadius: "9px",
-                        backgroundColor: "#3B82F6",
-                        color: "white",
-                        fontWeight: 500,
-                      }
-                    }}
-                  />
-                )}
               </ListItemButton>
             </ListItem>
           ))}
@@ -217,13 +239,15 @@ export default function UserSidebar() {
         aria-expanded={menuOpen ? "true" : "false"}
       >
         <Avatar
-          src="/path-to-avatar.jpg"
           sx={{
             width: 36,
             height: 36,
             mr: 1.5,
+            bgcolor: "#3B82F6",
           }}
-        />
+        >
+          {loading ? "..." : getInitials(userData?.name || "")}
+        </Avatar>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography
             fontWeight="500"
@@ -232,7 +256,7 @@ export default function UserSidebar() {
             noWrap
             sx={{ color: "#111827" }}
           >
-            John Doe
+            {loading ? "Loading..." : userData?.name || "User"}
           </Typography>
           <Typography
             fontSize="0.75rem"
@@ -240,7 +264,7 @@ export default function UserSidebar() {
             lineHeight={1.25}
             noWrap
           >
-            john@email.com
+            {loading ? "Loading..." : userData?.email || ""}
           </Typography>
         </Box>
         <IconButton size="small" sx={{ ml: 0.5 }}>
@@ -291,7 +315,10 @@ export default function UserSidebar() {
           <ListItemText>Settings</ListItemText>
         </MenuItem>
         <Divider sx={{ my: 1 }} />
-        <MenuItem onClick={() => { setMenuOpen(false); /* TODO: Handle logout */; }}>
+        <MenuItem onClick={() => { 
+          setMenuOpen(false); 
+          handleLogout(); 
+        }}>
           <ListItemIcon>
             <LogoutOutlinedIcon fontSize="small" sx={{ color: "#EF4444" }} />
           </ListItemIcon>

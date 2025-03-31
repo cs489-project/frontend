@@ -58,17 +58,15 @@ export default function UDInboxDisclosureList() {
       setError(null);
       const data = await disclosureService.getAll();
       
-      // Sort disclosures by unread status and most recent message
+      // Sort disclosures by unread status (no timestamps to sort by now)
       const sortedDisclosures = [...data].sort((a, b) => {
-        // First sort by unread status
+        // Sort by unread status
         if (a.unread !== b.unread) {
           return a.unread ? -1 : 1;
         }
         
-        // Then sort by most recent message timestamp
-        const aLatestMessage = a.messages[a.messages.length - 1] || { timestamp: new Date(0) };
-        const bLatestMessage = b.messages[b.messages.length - 1] || { timestamp: new Date(0) };
-        return bLatestMessage.timestamp.getTime() - aLatestMessage.timestamp.getTime();
+        // If both have the same unread status, sort by ID (newest first)
+        return b.id - a.id;
       });
       
       setDisclosures(sortedDisclosures);
@@ -344,7 +342,6 @@ export default function UDInboxDisclosureList() {
           </Stack>
         )}
       </Box>
-
     </Box>
   );
 }

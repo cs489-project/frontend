@@ -4,7 +4,6 @@ import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { Disclosure } from "../../services/disclosureService";
-import { getRelativeTimeString } from "../../utils/timeUtils";
 import ReactMarkdown from 'react-markdown';
 import rehypeSanitize from 'rehype-sanitize';
 import { useTheme, alpha } from "@mui/material";
@@ -23,17 +22,16 @@ const commonChipStyles = {
 export default function UDInboxDisclosureCard({
   id,
   unread,
-  resolved,
+  status,
   organization,
   logo,
-  messages,
+  content,
+  commentCount,
+  jobRequestTitle,
   onClick,
 }: DisclosureCardProps) {
   const theme = useTheme();
-  const latestMessage = messages[messages.length - 1];
-  const firstMessage = messages[0];
-  const relativeTime = latestMessage ? getRelativeTimeString(latestMessage.timestamp) : "Unknown time";
-
+  
   return (
     <Card
       variant="outlined"
@@ -78,7 +76,7 @@ export default function UDInboxDisclosureCard({
           {logo && (
             <img
               src={logo}
-              alt={organization}
+              alt={organization || jobRequestTitle}
               style={{
                 maxWidth: "100%",
                 maxHeight: "100%",
@@ -100,7 +98,7 @@ export default function UDInboxDisclosureCard({
               mb: 0.75,
             }}
           >
-            {organization}
+            {organization || jobRequestTitle}
           </Typography>
 
           {/* Markdown preview */}
@@ -131,7 +129,7 @@ export default function UDInboxDisclosureCard({
           >
             <div className="markdown-preview">
               <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-                {firstMessage?.content || "No content"}
+                {content || "No content"}
               </ReactMarkdown>
             </div>
           </Box>
@@ -139,7 +137,7 @@ export default function UDInboxDisclosureCard({
           {/* Status chips */}
           <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
             <Chip
-              label={relativeTime}
+              label={`${commentCount} comment${commentCount !== 1 ? 's' : ''}`}
               size="small"
               sx={{
                 ...commonChipStyles,
@@ -160,14 +158,18 @@ export default function UDInboxDisclosureCard({
                 }}
               />
             )}
-            {resolved && (
+            {status && (
               <Chip
-                label="Resolved"
+                label={status}
                 size="small"
                 sx={{
                   ...commonChipStyles,
-                  bgcolor: "#e8faf0",
-                  color: "#027948",
+                  bgcolor: status === "SUBMITTED" ? "#f1ebff" : 
+                           status === "ACCEPTED" ? "#e8faf0" : 
+                           status === "REJECTED" ? "#feeaea" : "#f1ebff",
+                  color: status === "SUBMITTED" ? "#5E35B1" :
+                         status === "ACCEPTED" ? "#027948" :
+                         status === "REJECTED" ? "#d32f2f" : "#5E35B1",
                 }}
               />
             )}

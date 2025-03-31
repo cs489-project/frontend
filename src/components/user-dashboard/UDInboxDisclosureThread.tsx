@@ -107,7 +107,7 @@ const MessageCard = ({ message }: { message: ThreadMessage }) => {
         }}
       >
         <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-          {message.content}
+          {message.message}
         </ReactMarkdown>
       </Box>
     </Paper>
@@ -161,6 +161,7 @@ const MessageThread = ({ messages }: { messages: ThreadMessage[] }) => {
             fontSize: '0.875rem',
             maxWidth: 340,
             lineHeight: 1.6,
+            textAlign: "center"
           }}
         >
           Start the conversation by sending your first message below.
@@ -173,7 +174,7 @@ const MessageThread = ({ messages }: { messages: ThreadMessage[] }) => {
     <>
       {messages.map((message) => (
         <MessageCard
-          key={`${message.senderName}-${message.timestamp}`}
+          key={`${message.senderName}-${message.timestamp.getTime()}`}
           message={message}
         />
       ))}
@@ -194,7 +195,6 @@ export default function UDInboxDisclosureThread() {
   const messageEndRef = useRef<null | HTMLDivElement>(null);
 
   const handleBackClick = useCallback(() => {
-    // Use browser history navigation 
     navigate(-1);
   }, [navigate]);
 
@@ -211,9 +211,6 @@ export default function UDInboxDisclosureThread() {
       const data = await disclosureService.getById(parseInt(disclosureId, 10));
       if (data) {
         setDisclosure(data);
-        if (data.unread) {
-          await disclosureService.markAsRead(parseInt(disclosureId, 10));
-        }
       } else {
         setError("Disclosure not found");
       }
@@ -230,11 +227,11 @@ export default function UDInboxDisclosureThread() {
   }, [fetchDisclosureData]);
 
   useEffect(() => {
-    // Auto scroll to bottom of messages when new messages are loaded or added
+    // Auto scroll to bottom of messages when new comments are loaded or added
     if (!loading && messageEndRef.current) {
       messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [disclosure?.messages, loading]);
+  }, [disclosure?.comments, loading]);
 
   const canSendMessage = () => {
     return newMessage.trim() !== '' && !sendingMessage && disclosure !== null;
@@ -428,7 +425,7 @@ export default function UDInboxDisclosureThread() {
   }
 
   if (!disclosure) return null;
-
+  
   return (
     <Container maxWidth="md" sx={{ py: 3 }}>
       {/* Back button and status indicator */}
@@ -457,7 +454,7 @@ export default function UDInboxDisclosureThread() {
         </Button>
 
         <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-          {disclosure.resolved ? (
+          {disclosure.status === 'ACCEPTED' ? (
             <Box
               sx={{
                 display: 'flex',
@@ -476,7 +473,28 @@ export default function UDInboxDisclosureThread() {
               }}
             >
               <CheckCircleIcon sx={{ fontSize: '1.1rem' }} />
-              <span>Resolved</span>
+              <span>Accepted</span>
+            </Box>
+          ) : disclosure.status === 'REJECTED' ? (
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 0.75,
+                borderRadius: "8px",
+                fontSize: "0.875rem",
+                py: 0.75,
+                px: 2,
+                minWidth: 110,
+                borderColor: alpha(theme.palette.error.main, 0.5),
+                backgroundColor: alpha(theme.palette.error.main, 0.02),
+                color: theme.palette.error.main,
+                border: '1px solid',
+                fontWeight: 500
+              }}
+            >
+              <SecurityIcon sx={{ fontSize: '1.1rem' }} />
+              <span>Rejected</span>
             </Box>
           ) : (
             <Box
@@ -497,7 +515,7 @@ export default function UDInboxDisclosureThread() {
               }}
             >
               <SecurityIcon sx={{ fontSize: '1.1rem' }} />
-              <span>Active</span>
+              <span>Submitted</span>
             </Box>
           )}
         </Box>
@@ -535,7 +553,7 @@ export default function UDInboxDisclosureThread() {
           >
             <img
               src={disclosure.logo || "https://via.placeholder.com/48"}
-              alt={disclosure.organization}
+              alt={disclosure.organization || disclosure.jobRequestTitle}
               style={{
                 maxWidth: "100%",
                 width: 36,
@@ -557,7 +575,7 @@ export default function UDInboxDisclosureThread() {
                 lineHeight: 1.3
               }}
             >
-              {disclosure.organization}
+              {disclosure.organization || disclosure.jobRequestTitle}
             </Typography>
             
             <Typography
@@ -576,14 +594,51 @@ export default function UDInboxDisclosureThread() {
         </Box>
       </Paper>
 
+      {/* Display report content */}
+      <Paper
+        elevation={0}
+        sx={{
+          mb: 4,
+          borderRadius: 3,
+          border: "1px solid",
+          borderColor: "divider",
+          boxShadow: "0 1px 2px rgba(0,0,0,0.02)",
+          p: { xs: 2.5, sm: 3 }
+        }}
+      >
+        <Typography variant="h6" fontWeight="600" sx={{ mb: 2 }}>
+          Report Details
+        </Typography>
+        <Box 
+          sx={{
+            // Markdown styling from UDOpportunityDetail
+            textAlign: 'left',
+            '& h1, & h2, & h3, & h4, & h5, & h6': {
+              fontWeight: 600
+            },
+            '& h1': { fontSize: '1.5rem' },
+            '& h2': { fontSize: '1.3rem' },
+            '& h3': { fontSize: '1.1rem' },
+            '& h4, & h5, & h6': { fontSize: '1rem' }
+          }}
+        >
+          <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+            {disclosure.content}
+          </ReactMarkdown>
+        </Box>
+      </Paper>
+
       {/* Messages container */}
       <Box sx={{ mb: 3 }}>
-        <MessageThread messages={disclosure.messages} />
+        <Typography variant="h6" fontWeight="600" sx={{ mb: 2 }}>
+          Comments ({disclosure.commentCount})
+        </Typography>
+        <MessageThread messages={disclosure.comments || []} />
         <div ref={messageEndRef} />
       </Box>
       
       {/* Message input box with preview */}
-      {!disclosure.resolved ? (
+      {disclosure.status !== 'REJECTED' && disclosure.status !== 'ACCEPTED' ? (
         <Paper
           elevation={0}
           sx={{
@@ -801,15 +856,30 @@ export default function UDInboxDisclosureThread() {
             alignItems: 'center',
             justifyContent: 'center',
             border: '1px solid',
-            borderColor: alpha(theme.palette.success.main, 0.2),
-            bgcolor: alpha(theme.palette.success.main, 0.05),
+            borderColor: disclosure.status === 'ACCEPTED' ? 
+              alpha(theme.palette.success.main, 0.2) : 
+              alpha(theme.palette.error.main, 0.2),
+            bgcolor: disclosure.status === 'ACCEPTED' ?
+              alpha(theme.palette.success.main, 0.05) :
+              alpha(theme.palette.error.main, 0.05),
             gap: 2,
           }}
         >
-          <CheckCircleIcon sx={{ fontSize: 24, color: theme.palette.success.main }} />
-          <Typography sx={{ color: theme.palette.success.dark, fontWeight: 600, fontSize: '0.95rem' }}>
-            This disclosure has been resolved
-          </Typography>
+          {disclosure.status === 'ACCEPTED' ? (
+            <>
+              <CheckCircleIcon sx={{ fontSize: 24, color: theme.palette.success.main }} />
+              <Typography sx={{ color: theme.palette.success.dark, fontWeight: 600, fontSize: '0.95rem' }}>
+                This disclosure has been accepted
+              </Typography>
+            </>
+          ) : (
+            <>
+              <SecurityIcon sx={{ fontSize: 24, color: theme.palette.error.main }} />
+              <Typography sx={{ color: theme.palette.error.dark, fontWeight: 600, fontSize: '0.95rem' }}>
+                This disclosure has been rejected
+              </Typography>
+            </>
+          )}
         </Paper>
       )}
     </Container>
