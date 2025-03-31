@@ -1,18 +1,25 @@
-import { useState } from "react";
-import { Container, TextField, Button, Paper, Tabs, Tab, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Container, TextField, Button, Paper, Tabs, Tab, Typography, Link } from "@mui/material";
 import QRCode from "../components/QRCode";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function UserSignUpLogin() {
   const [tab, setTab] = useState(0);
-  const [form, setForm] = useState({ orgname: "", email: "", password: "", logoURL: "" });
+  const [form, setForm] = useState({ orgname: "", email: "", password: "" });
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [mfaStage, setMFAStage] = useState(false);
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("noSession")) {
+      showSnackbar("Session expired. Please re-authenticate", "error");
+    }
+  }, []);
 
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -30,6 +37,8 @@ export default function UserSignUpLogin() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
+    if (!!emailError || !!passwordError) return;
+
     if (tab === 0) {
       try {
         await axios.post("/api/users/login-password", {
@@ -46,7 +55,6 @@ export default function UserSignUpLogin() {
           name: form.orgname,
           email: form.email,
           password: form.password,
-          logo_url: form.logoURL
         });
         setMFAStage(true);
       } catch (e: any) {
@@ -68,6 +76,7 @@ export default function UserSignUpLogin() {
               <Tab label="Login" />
               <Tab label="Sign Up" />
             </Tabs>
+              <Typography align='center' sx={{ m: 1 }}>Click <Link href="/">here</Link> to {tab === 0 ? "log in" : "sign up"} as User</Typography>
               <form onSubmit={handleSubmit} style={{ width: "300px", margin: 'auto' }}>
                 {
                   tab === 1 && <TextField
@@ -108,19 +117,6 @@ export default function UserSignUpLogin() {
                   helperText={passwordError}
                   size="small"
                 />
-                {
-                  tab === 1 && <TextField
-                    label="Organization Logo URL"
-                    type="text"
-                    name="logoURL"
-                    fullWidth
-                    margin="normal"
-                    value={form.logoURL}
-                    onChange={handleChange}
-                    required
-                    size="small"
-                  />
-                }
                 <Button type="submit" variant="contained" color="primary" fullWidth sx={{ mt: 2 }}>
                   {tab === 1 ? "Sign Up" : "Login"}
                 </Button>

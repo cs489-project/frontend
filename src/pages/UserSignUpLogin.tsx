@@ -1,9 +1,9 @@
-import { useState } from "react";
-import { Container, TextField, Button, Paper, Tabs, Tab, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Container, TextField, Button, Paper, Tabs, Tab, Typography, Link } from "@mui/material";
 import QRCode from "../components/QRCode";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 export default function UserSignUpLogin() {
   const [tab, setTab] = useState(0);
@@ -13,6 +13,13 @@ export default function UserSignUpLogin() {
   const [mfaStage, setMFAStage] = useState(false);
   const navigate = useNavigate();
   const { showSnackbar } = useSnackbar();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.get("noSession")) {
+      showSnackbar("Session expired. Please re-authenticate", "error");
+    }
+  }, []);
 
   const handleChange = (e: any) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,6 +42,8 @@ export default function UserSignUpLogin() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
+
+    if (!!emailError || !!passwordError) return;
 
     if (tab === 0) {
       try {
@@ -78,6 +87,7 @@ export default function UserSignUpLogin() {
                 <Tab label="Login" />
                 <Tab label="Sign Up" />
               </Tabs>
+              <Typography align='center' sx={{ m: 1 }}>Click <Link href="/org">here</Link> to {tab === 0 ? "log in" : "sign up"} as Organization</Typography>
               <form
                 onSubmit={handleSubmit}
                 style={{ width: 300, margin: "auto" }}

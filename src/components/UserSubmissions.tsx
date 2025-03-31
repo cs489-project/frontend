@@ -1,96 +1,118 @@
-import { Avatar, Box, Button, Card, CardActionArea, Drawer, Paper, Typography } from "@mui/material";
-import { useState } from "react";
+import { Avatar, Box, Button, Card, CardActionArea, Chip, Drawer, Paper, Tooltip, Typography } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
 import MarkdownWrapper from "./MarkdownWrapper";
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import ApartmentIcon from '@mui/icons-material/Apartment';
+import axios from "axios";
+import { useSnackbar } from "./SnackBar";
+import { useUserInfoContext } from "../utils/Context";
 
-const messages = [
-    {
-        sent_on: "02/25/2025",
-        content: `
+type Report = {
+    commentCount: number,
+    id: number,
+    jobRequestTitle: string,
+    logo: string,
+    status: "submitted" | "rejected" | "accepted",
+    unread: true,
+    user: string
+};
 
-# SQL Injection Exploitation on a Login Page
-
-## **Target:**
-- Web application login form vulnerable to SQL injection.
-
-## **Steps to Reproduce:**
-1. **Visit the Login Page**
-    - Open the target web application in a browser.
-    - Navigate to the login form (e.g., \`https://example.com/login\`).
-
-2. **Enter Malicious SQL Payload in the Username Field**
-    - Use the following input in the **Username** field:
-        \`\`\`sql
-        ' OR 1=1 --
-        \`\`\`
-    - Enter any value in the password field (or leave it empty).
-
-3. **Submit the Form**
-    - Click the **Login** button.
-    - If successful, you will bypass authentication and log in as an administrative user.
-
-## **Why It Works:**
-- The vulnerable login query might look like this:
-    \`\`\`sql
-    SELECT * FROM users WHERE username = 'USER_INPUT' AND password = 'PASSWORD_INPUT';
-`,
-        sent_by: "USER"
-    },
-    {
-        sent_on: "02/25/2025",
-        content: "sounds good, taking a look",
-        sent_by: "ORG"
-    },
-    {
-        sent_on: "02/25/2025",
-        content: "sure, *lmk*",
-        sent_by: "USER"
-    },
-];
-
-const submissions = [
-    {
-        userId: "userid1",
-        postingId: "Bounty Posting 1",
-        messages: messages,
-    },
-    {
-        userId: "userid2",
-        postingId: "Bounty Posting 2",
-        messages: messages,
-    },
-];
+type Comment = {
+    message: string,
+    senderName: string,
+    timestamp: string
+}
 
 type Props = {
-    submission: {
-        userId: string,
-        postingId: string,
-        messages: {
-            sent_on: string,
-            content: string,
-            sent_by: string,
-        }[]
-    }
+    report: Report,
+    refetch: () => void,
 }
+
 function SubmissionChat(props: Props) {
+    const { report, refetch } = props;
+    const meData = useUserInfoContext();
+    const [reportStatus, setReportStatus] = useState<Report["status"]>("submitted");
+    const { showSnackbar } = useSnackbar();
+    const [comments, setComments] = useState<Comment[]>([]);
     const [message, setMessage] = useState("");
+    const chatRef = useRef<HTMLDivElement | null>(null);
+
+    const getDetailedReport = async () => {
+        try {
+            const response = await axios.get("/api/reports/get-by-id", {
+                params: {
+                    report_id: report.id
+                }
+            });
+            setComments(response.data.report.comments);
+            setReportStatus(response.data.report.status);
+            refetch();
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error getting data . Try again later", "error");
+        }
+    }
+
+    useEffect(() => {
+        getDetailedReport();
+    }, [report]);
+
+    useEffect(() => {
+        if (chatRef.current) {
+            chatRef.current.scrollTop = chatRef.current.scrollHeight;
+        }
+    }, [comments]);
+
+    const sendMessage = async () => {
+        try {
+            await axios.post("/api/reports/comment", {
+                report_id: report.id,
+                content: message
+            });
+            setMessage("");
+            getDetailedReport();
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error sending message. Try again later", "error");
+        }
+    }
+
+    const evaluateReport = async (approve: boolean) => {
+        try {
+            if (approve) {
+                await axios.post('/api/reports/accept-report', {
+                    report_id: report.id
+                });
+                showSnackbar("Report Accepted", "success");
+            } else {
+                await axios.post('/api/reports/reject-report', {
+                    report_id: report.id
+                });
+                showSnackbar("Report Rejected", "success");
+            }
+            refetch();
+            getDetailedReport();
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error fetching postings right now. Try again later", "error");
+        }
+    }
 
     return <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-        <div style={{ flexGrow: 1, padding: "64px 0 16px", overflowY: "auto" }}>
+        <div style={{ flexGrow: 1, padding: "64px 0 16px", overflowY: "auto" }} ref={chatRef}>
             {
-                props.submission.messages.map(message => {
-                    return <div style={{ display: "flex", flexDirection: message.sent_by === "USER" ? "row" : "row-reverse", padding: "16px" }}>
+                comments.map(comment => {
+                    return <div style={{ display: "flex", flexDirection: comment.senderName === meData.name ? "row-reverse" : "row", padding: "16px" }}>
                         <div style={{ padding: "0 16px" }}>
-                            <Avatar>
-                                {message.sent_by === "USER" ? <AccountCircleIcon /> : <ApartmentIcon />}
-                            </Avatar>
+                            <Tooltip title={comment.senderName}>
+                                <Avatar
+                                    src={comment.senderName === meData.name ? (meData.metadata.logo_url || "") : ""}
+                                    alt={comment.senderName === meData.name ? meData.name : ""}
+                                />
+                            </Tooltip>
                         </div>
                         <div>
                             <Paper sx={{ flexGrow: 1, overflow: "auto", maxWidth: 600 }} elevation={2}>
-                                <div style={{ padding: 8 }}>
-                                    <MarkdownWrapper value={message.content} />
-                                </div>
+                                <Tooltip title={comment.timestamp}>
+                                    <div style={{ padding: 8 }}>
+                                        <MarkdownWrapper value={comment.message} />
+                                    </div>
+                                </Tooltip>
                             </Paper>
                         </div>
                         <div style={{ width: "100px" }}></div>
@@ -106,16 +128,34 @@ function SubmissionChat(props: Props) {
                 required
                 onChange={(e) => setMessage(e.target.value)}
             ></textarea>
-            <div style={{ flex: 1, border: "1px solid black" }}>
+            <div style={{ flex: 1, border: "1px solid black", overflow: "auto", height: "200px" }}>
                 <MarkdownWrapper value={message}></MarkdownWrapper>
             </div>
         </div>
-        <Button fullWidth variant="contained" sx={{ borderRadius: 0 }}>Send Message</Button>
+        <div style={{ display: "flex" }}>
+            <Button onClick={sendMessage} variant="contained" sx={{ borderRadius: 0, flexGrow: 1 }}>Send Message</Button>
+            <Button onClick={() => evaluateReport(true)} disabled={reportStatus !== 'submitted'} variant="contained" sx={{ borderRadius: 0 }} color="success">Approve</Button>
+            <Button onClick={() => evaluateReport(false)} disabled={reportStatus !== 'submitted'} variant="contained" sx={{ borderRadius: 0 }} color="error">Reject</Button>
+        </div>
     </div>;
 }
 
 export default function UserSubmissions() {
-    const [currentSubmission, setCurrentSubmission] = useState<null | any>(null);
+    const [currentReport, setCurrentReport] = useState<null | Report>(null);
+    const [reports, setReports] = useState<Report[]>([]);
+    const { showSnackbar } = useSnackbar();
+
+    async function getReports() {
+        try {
+            const response = await axios.get("/api/reports/get-all");
+            setReports(response.data.reports.sort((a: Report, b: Report) => a.id - b.id));
+        } catch (e: any) {
+            showSnackbar(e?.response?.data?.error || "Error getting data. Try again later", "error");
+        }
+    }
+    useEffect(() => {
+        getReports();
+    }, []);
 
     return <Box sx={{ display: "flex", height: "100vh" }}>
         {/* Sidebar Drawer */}
@@ -127,13 +167,19 @@ export default function UserSubmissions() {
                 [`& .MuiDrawer-paper`]: { width: 400, marginTop: "64px" }, // Ensure it aligns with AppBar height
             }}
         >
-            {submissions.map(submission => (
-                <Card key={submission.postingId} elevation={0}>
+            {reports.map(report => (
+                <Card key={report.id} elevation={0}>
                     <CardActionArea
                         sx={{ border: "1px solid lightgrey", borderRadius: 0, padding: 2 }}
-                        onClick={() => setCurrentSubmission(submission)}
+                        onClick={() => setCurrentReport(report)}
                     >
-                        <Typography>{submission.postingId} (By: {submission.userId})</Typography>
+                        <Typography>{report.jobRequestTitle} (By: {report.user})</Typography>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                            <Chip color={report.status === "accepted" ? "success" : (report.status === "rejected" ? "error" : "info")} label={report.status.toUpperCase()} size="small" />
+                            {
+                                report.unread && <Chip color="error" label={"UNREAD"} size="small"></Chip>
+                            }
+                        </div>
                     </CardActionArea>
                 </Card>
             ))}
@@ -144,12 +190,12 @@ export default function UserSubmissions() {
             component="main"
             sx={{ flexGrow: 1 }} // Push content to the right
         >
-            {currentSubmission ? (
-                <SubmissionChat submission={currentSubmission} />
+            {currentReport ? (
+                <SubmissionChat report={currentReport} refetch={getReports} />
             ) : (
                 <>
                     <div style={{ height: "64px" }}></div>
-                    <div style={{ margin: 24 }}>Click on a record on the left to see the submissions</div>
+                    <div style={{ margin: 24 }}>Click on a record on the left to see the report</div>
                 </>
             )}
         </Box>
