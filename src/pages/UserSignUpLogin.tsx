@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, TextField, Button, Paper, Tabs, Tab, Typography, Link } from "@mui/material";
+import { Container, TextField, Button, Paper, Tabs, Tab, Typography, Link, Box, Alert } from "@mui/material";
 import QRCode from "../components/QRCode";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";
@@ -75,8 +75,8 @@ export default function UserSignUpLogin() {
         color: "purple"
       }}>Breakers</span></Typography>
       <h4>Bug bounty platform for you to show off your hacking skills</h4>
-      <div style={{ height: "400px" }}>
-        <Paper elevation={3} sx={{ width: 400, p: 4, margin: "40px auto" }}>
+      <div style={{ height: "auto", minHeight: "500px" }}>
+        <Paper elevation={3} sx={{ width: "100%", maxWidth: 500, p: 4, margin: "40px auto" }}>
           {!mfaStage ? (
             <>
               <Tabs
@@ -143,11 +143,11 @@ export default function UserSignUpLogin() {
               </form>
             </>
           ) : (
-            <QRCode
-              type={tab === 0 ? "login" : "signup"}
-              goBack={() => setMFAStage(false)}
-              onSuccess={() => navigate("/user/dashboard")}
-            />
+              <QRCode
+                type={tab === 0 ? "login" : "signup"}
+                goBack={() => setMFAStage(false)}
+                onSuccess={() => navigate("/user/dashboard")}
+              />
           )}
         </Paper>
       </div>

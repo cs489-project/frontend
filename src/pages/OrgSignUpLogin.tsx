@@ -69,15 +69,15 @@ export default function UserSignUpLogin() {
         color: "purple"
       }}>Breakers</span></Typography>
       <h4>Bug bounty platform for your organization to hire top security talents</h4>
-      <div style={{ height: "400px" }}>
-        <Paper elevation={3} sx={{ width: 400, p: 4, margin: "40px auto" }}>
+      <div style={{ height: "auto", minHeight: "500px" }}>
+        <Paper elevation={3} sx={{ width: "100%", maxWidth: 500, p: 4, margin: "40px auto" }}>
           {
             !mfaStage ? <><Tabs value={tab} onChange={(_e, newValue) => setTab(newValue)} centered>
               <Tab label="Login" />
               <Tab label="Sign Up" />
             </Tabs>
               <Typography align='center' sx={{ m: 1 }}>Click <Link href="/">here</Link> to {tab === 0 ? "log in" : "sign up"} as User</Typography>
-              <form onSubmit={handleSubmit} style={{ width: "300px", margin: 'auto' }}>
+              <form onSubmit={handleSubmit} style={{ width: 300, margin: 'auto' }}>
                 {
                   tab === 1 && <TextField
                     label="Company Name"
