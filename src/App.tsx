@@ -16,6 +16,8 @@ import PostingBuilder from "./components/PostingBuilder";
 import UserSubmissions from "./components/UserSubmissions";
 import { UserInfoProvider } from "./utils/Context";
 import AxiosInterceptorSetup from "./utils/AxiosInterceptor";
+import AdminDashBoard from "./pages/AdminDashboard";
+import AdminLogin from "./pages/AdminLogin";
 
 function App() {
   return (
@@ -51,6 +53,9 @@ function App() {
           </Route>
           <Route path="/org/pending" element={<PendingSignUp />} />
           <Route path="*" element={<NotFound />} />
+
+          <Route path="/admin" element={<AdminLogin />}></Route>
+          <Route path="/admin/dashboard" element={<AdminDashBoard />}></Route>
         </Routes>
       </UserInfoProvider>
     </SnackbarProvider>

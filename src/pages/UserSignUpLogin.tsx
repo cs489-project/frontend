@@ -43,6 +43,8 @@ export default function UserSignUpLogin() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
+    if (!!emailError || !!passwordError) return;
+
     if (tab === 0) {
       try {
         await axios.post("/api/users/login-password", {
