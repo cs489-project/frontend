@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import Drawer from "@mui/material/Drawer";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -21,20 +22,45 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const drawerWidth = 280;
 
-interface UserSidebarProps {
-  selectedItem: string;
-  onSelectItem: (item: string) => void;
-}
+const ROUTE_MAP = {
+  Opportunities: "/user/dashboard/opportunities",
+  Inbox: "/user/dashboard/inbox",
+  Settings: "/user/dashboard/settings"
+} as const;
 
-export default function UserSidebar({ selectedItem, onSelectItem }: UserSidebarProps) {
+export default function UserSidebar() {
+  const navigate = useNavigate();
+  const location = useLocation();
   const profileRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Get current tab from URL
+  const getCurrentTab = () => {
+    if (location.pathname.includes("/opportunities")) return "Opportunities";
+    if (location.pathname.includes("/inbox")) return "Inbox";
+    if (location.pathname.includes("/settings")) return "Settings";
+    return "Opportunities";
+  };
+
+  const selectedItem = getCurrentTab();
 
   // Navigation items
   const navItems = [
     { text: "Opportunities", icon: <TrackChangesIcon />, badge: 0 },
     { text: "Inbox", icon: <InboxIcon />, badge: 5 },
   ];
+
+  // Handle tab change
+  const handleTabChange = (tab: string) => {
+    // Don't do anything if clicking the current tab
+    if (tab === selectedItem) return;
+
+    // Navigate based on selected item
+    const path = ROUTE_MAP[tab as keyof typeof ROUTE_MAP];
+    if (path) {
+      navigate(path);
+    }
+  };
 
   return (
     <Drawer
@@ -64,7 +90,7 @@ export default function UserSidebar({ selectedItem, onSelectItem }: UserSidebarP
             gap: 1.5,
             cursor: "pointer"
           }}
-          onClick={() => onSelectItem("Opportunities")}
+          onClick={() => handleTabChange("Opportunities")}
         >
           <Box
             sx={{
@@ -100,7 +126,7 @@ export default function UserSidebar({ selectedItem, onSelectItem }: UserSidebarP
           {navItems.map(({ text, icon, badge }) => (
             <ListItem key={text} disablePadding sx={{ mb: 0.5 }}>
               <ListItemButton
-                onClick={() => onSelectItem(text)}
+                onClick={() => handleTabChange(text)}
                 selected={text === selectedItem}
                 sx={{
                   height: "40px",
@@ -240,6 +266,9 @@ export default function UserSidebar({ selectedItem, onSelectItem }: UserSidebarP
                 py: 1.2,
                 fontWeight: 400,
               },
+              "& .MuiListItemText-primary": {
+                fontSize: "0.875rem"
+              }
             },
           }
         }}
@@ -252,11 +281,14 @@ export default function UserSidebar({ selectedItem, onSelectItem }: UserSidebarP
           }
         }}
       >
-        <MenuItem onClick={() => { setMenuOpen(false); onSelectItem("Settings"); }}>
+        <MenuItem onClick={() => { 
+          setMenuOpen(false);
+          handleTabChange("Settings");
+        }}>
           <ListItemIcon>
             <SettingsOutlinedIcon fontSize="small" sx={{ color: "#4B5563" }} />
           </ListItemIcon>
-          Settings
+          <ListItemText>Settings</ListItemText>
         </MenuItem>
         <Divider sx={{ my: 1 }} />
         <MenuItem onClick={() => { setMenuOpen(false); /* TODO: Handle logout */; }}>

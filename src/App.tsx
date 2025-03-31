@@ -8,7 +8,8 @@ import PendingSignUp from "./pages/PendingSignUp";
 import OrgDashboard from "./pages/OrgDashboard";
 import UDOpportunitiesList from "./components/user-dashboard/UDOpportunitiesList";
 import UDOpportunityDetail from "./components/user-dashboard/UDOpportunityDetail";
-import UDInbox from "./components/user-dashboard/UDInbox";
+import UDInboxDisclosureList from "./components/user-dashboard/UDInboxDisclosureList";
+import UDInboxDisclosureThread from "./components/user-dashboard/UDInboxDisclosureThread";
 import UDSettings from "./components/user-dashboard/UDSettings";
 import { SnackbarProvider } from "./components/SnackBar";
 import OrgPostingList from "./components/OrgPostingList";
@@ -30,20 +31,18 @@ function App() {
         <Route path="/user/dashboard" element={<UDLayout />}>
           <Route index element={<Navigate to="opportunities" replace />} />
           <Route path="opportunities" element={<UDOpportunitiesList />} />
-          <Route
-            path="opportunities/:opportunityId"
-            element={<UDOpportunityDetail />}
-          />
-          <Route path="inbox" element={<UDInbox />} />
+          <Route path="opportunities/:opportunityId" element={<UDOpportunityDetail />} />
+          <Route path="inbox" element={<UDInboxDisclosureList />} />
+          <Route path="inbox/:disclosureId" element={<UDInboxDisclosureThread />} />
           <Route path="settings" element={<UDSettings />} />
         </Route>
 
         <Route path="/org" element={<OrgSignUpLogin />} />
         <Route path="/org/dashboard" element={<OrgDashboard />}>
-          <Route index element={<Navigate to="/org/dashboard/overview" replace />}></Route>
-          <Route path="overview" element={<OrgPostingList />}></Route>
-          <Route path="create-edit/:id?" element={<PostingBuilder />}></Route>
-          <Route path="submissions" element={<UserSubmissions />}></Route>
+          <Route index element={<Navigate to="/org/dashboard/overview" replace />} />
+          <Route path="overview" element={<OrgPostingList />} />
+          <Route path="create-edit/:id?" element={<PostingBuilder />} />
+          <Route path="submissions" element={<UserSubmissions />} />
         </Route>
         <Route path="/org/pending" element={<PendingSignUp />} />
         <Route path="*" element={<NotFound />} />

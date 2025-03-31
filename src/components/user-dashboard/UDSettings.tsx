@@ -12,13 +12,27 @@ export default function UDSettings() {
           borderRadius: 3,
         }}
       >
-        <Typography variant="h6" sx={{ mb: 1, color: "#637381" }}>
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            mb: 1, 
+            color: "#637381",
+            fontSize: "0.875rem",
+            fontWeight: 600
+          }}
+        >
           Settings Coming Soon
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography 
+          variant="body2" 
+          sx={{ 
+            color: "text.secondary",
+            fontSize: "0.875rem"
+          }}
+        >
           This feature is currently under development. Check back later for updates.
         </Typography>
       </Paper>
     </Box>
   );
-} 
+}
