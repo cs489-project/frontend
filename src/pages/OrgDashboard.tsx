@@ -5,6 +5,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useUserInfoContext } from "../utils/Context";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";
+import EmailUs from "../components/EmailUs";
 
 export default function OrgDashboard() {
     const location = useLocation();
@@ -63,6 +64,7 @@ export default function OrgDashboard() {
             <div style={{ flexGrow: 1 }}>
                 <Outlet />
             </div>
+            <EmailUs />
         </Box>
     );
 }

@@ -2,6 +2,7 @@ import { Box, Container, Typography, Breadcrumbs, Link } from "@mui/material";
 import UserSidebar from "../UserSidebar";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useNavigate, useParams, useLocation, Outlet } from "react-router-dom";
+import EmailUs from "../EmailUs";
 
 export default function UDLayout() {
   const navigate = useNavigate();
@@ -94,6 +95,8 @@ export default function UDLayout() {
           </Breadcrumbs>
           
           <Outlet context={{ opportunityId }} />
+
+          <EmailUs />
         </Container>
       </Box>
     </Box>

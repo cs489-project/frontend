@@ -91,6 +91,7 @@ const QRCodeGenerator = ({ type, goBack, onSuccess }: Props) => {
         maxWidth: 480,
         mx: "auto",
         p: 3,
+        pb: 0,
         borderRadius: '8px'
       }}
     >

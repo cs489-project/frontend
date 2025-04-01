@@ -35,6 +35,11 @@ export const UserInfoProvider = ({ children }: { children: JSX.Element }) => {
 
     useEffect(() => {
         async function fetchMe() {
+            // do not fetch on signup/signin pages
+            if (["/", "/org", "/user", "/admin"].includes(location.pathname)) {
+                return;
+            }
+
             const response = await axios.get("/api/users/me");
             setValue(response.data);
 
