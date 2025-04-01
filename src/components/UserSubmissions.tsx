@@ -7,6 +7,7 @@ import { useUserInfoContext } from "../utils/Context";
 
 type Report = {
     commentCount: number,
+    content: string,
     id: number,
     jobRequestTitle: string,
     logo: string,
@@ -95,6 +96,11 @@ function SubmissionChat(props: Props) {
 
     return <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
         <div style={{ flexGrow: 1, padding: "64px 0 16px", overflowY: "auto" }} ref={chatRef}>
+            <div style={{ padding: 8 }}>
+                <MarkdownWrapper value={report.content} />
+            </div>
+            <Typography align="center" sx={{ p: 4 }}>Below are the chat history with {report.user}</Typography>
+            <hr />
             {
                 comments.map(comment => {
                     return <div style={{ display: "flex", flexDirection: comment.senderName === meData.name ? "row-reverse" : "row", padding: "16px" }}>
