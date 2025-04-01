@@ -19,6 +19,8 @@ import {
   Checkbox,
   Link,
   Snackbar,
+  Tabs,
+  Tab,
 } from "@mui/material";
 import ReactMarkdown from 'react-markdown';
 import rehypeSanitize from 'rehype-sanitize';
@@ -29,6 +31,7 @@ import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { disclosureService } from "../../services/disclosureService";
 
 // Initial markdown template for the disclosure submission
@@ -75,9 +78,15 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'write' | 'preview'>('write');
 
   // Use unique localStorage key per opportunity
   const localStorageKey = `${DISCLOSURE_CONTENT_KEY}_${opportunityId}`;
+
+  // Handle tab change
+  const handleTabChange = (_event: React.SyntheticEvent, newValue: 'write' | 'preview') => {
+    setActiveTab(newValue);
+  };
 
   // Load saved content from localStorage when modal opens
   useEffect(() => {
@@ -269,158 +278,176 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
             </Paper>
           </Box>
 
-          {/* Header tabs */}
-          <Box sx={{
-            display: 'flex',
-            borderBottom: '1px solid',
-            borderColor: alpha(theme.palette.divider, 0.15),
-            position: 'relative'
-          }}>
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              px: 3,
-              py: 1.5,
-              borderRight: '1px solid',
+          {/* Tabs for editor/preview */}
+          <Tabs 
+            value={activeTab}
+            onChange={handleTabChange}
+            aria-label="disclosure editor tabs"
+            sx={{
+              minHeight: 42,
+              borderBottom: '1px solid',
               borderColor: alpha(theme.palette.divider, 0.15),
-              width: '50%'
-            }}>
-              <MarkdownIcon
-                fontSize="small"
-                sx={{
-                  color: alpha(theme.palette.text.secondary, 0.7),
-                  fontSize: '0.85rem',
-                  mr: 1
-                }}
-              />
-              <Typography
-                variant="body2"
-                sx={{
-                  color: alpha(theme.palette.text.secondary, 0.9),
-                  fontWeight: 500,
-                  fontSize: '0.85rem'
-                }}
-              >
-                Markdown Editor
-              </Typography>
-
-              <Tooltip title="Markdown supported" arrow placement="top">
-                <IconButton
-                  size="small"
+              '& .MuiTabs-indicator': {
+                height: 2,
+                backgroundColor: theme.palette.primary.main
+              },
+              '& .MuiTab-root': {
+                minHeight: 42,
+                textTransform: 'none',
+                fontSize: '0.75rem',
+                fontWeight: 500,
+                color: alpha(theme.palette.text.secondary, 0.9),
+                px: 3,
+                '&.Mui-selected': {
+                  color: theme.palette.primary.main,
+                  fontWeight: 600
+                }
+              }
+            }}
+          >
+            <Tab 
+              value="write" 
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <MarkdownIcon sx={{ fontSize: 18 }} />
+                  <span>Write</span>
+                </Box>
+              } 
+            />
+            <Tab 
+              value="preview" 
+              label={
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <VisibilityIcon sx={{ fontSize: 18 }} />
+                  <span>Preview</span>
+                </Box>
+              } 
+            />
+          </Tabs>
+          
+          <Box sx={{ flexGrow: 1, height: 'calc(100% - 155px)', overflow: 'hidden' }}>
+            {/* Write tab */}
+            {activeTab === 'write' && (
+              <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <TextField
+                  multiline
+                  fullWidth
+                  value={disclosureContent}
+                  onChange={handleDisclosureContentChange}
+                  placeholder="Describe your security finding in detail..."
+                  variant="outlined"
+                  disabled={submitting}
+                  InputProps={{
+                    sx: {
+                      border: 'none',
+                      height: '100%',
+                      '& .MuiOutlinedInput-notchedOutline': {
+                        border: 'none',
+                      },
+                    }
+                  }}
                   sx={{
-                    color: alpha(theme.palette.text.secondary, 0.7),
-                    padding: '4px',
-                    borderRadius: '6px',
-                    ml: 'auto'
+                    flexGrow: 1,
+                    '& .MuiInputBase-root': {
+                      height: '100%',
+                      fontFamily: '"SF Mono", "Menlo", "Monaco", monospace',
+                      fontSize: '0.875rem',
+                      p: 2.5,
+                      color: theme.palette.text.primary,
+                      overflow: 'auto',
+                    },
+                    '& .MuiInputBase-inputMultiline': {
+                      height: '100% !important',
+                      overflow: 'auto !important',
+                    },
+                    '& textarea': {
+                      height: '100% !important',
+                    },
+                    '& textarea::placeholder': { 
+                      opacity: 0.6,
+                      fontSize: '0.875rem',
+                    },
+                  }}
+                />
+                
+                {/* Markdown formatting hints - fixed at the bottom */}
+                <Box 
+                  sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                    p: 1.5,
+                    bgcolor: alpha(theme.palette.background.default, 0.5),
+                    borderTop: '1px solid',
+                    borderColor: alpha(theme.palette.divider, 0.06),
+                    flexShrink: 0,
+                    flexWrap: 'wrap',
                   }}
                 >
-                  <HelpOutlineIcon sx={{ fontSize: '0.85rem' }} />
-                </IconButton>
-              </Tooltip>
-            </Box>
-
-            <Box sx={{
-              display: 'flex',
-              alignItems: 'center',
-              px: 3,
-              py: 1.5,
-              width: '50%'
-            }}>
-              <Typography
-                variant="body2"
+                  {['**Bold**', '*Italic*', '`Code`', '## Heading', '[Link](url)', '1. List'].map((format, idx) => (
+                    <Tooltip key={idx} title={format.replace(/\*/g, '').replace(/`/g, '').replace(/\[|\]|\(url\)/g, '').replace(/##/, '').replace(/1\./, '')} arrow placement="top">
+                      <Box
+                        component="span"
+                        sx={{
+                          fontSize: '0.75rem',
+                          px: 1,
+                          py: 0.5,
+                          borderRadius: 1,
+                          fontFamily: '"SF Mono", "Menlo", monospace',
+                          color: alpha(theme.palette.text.secondary, 0.8),
+                          bgcolor: alpha(theme.palette.background.default, 0.7),
+                          border: '1px solid',
+                          borderColor: alpha(theme.palette.divider, 0.1),
+                          cursor: 'default',
+                          userSelect: 'none',
+                          display: { xs: idx < 4 ? 'block' : 'none', sm: 'block' },
+                          m: 0.25
+                        }}
+                      >
+                        {format}
+                      </Box>
+                    </Tooltip>
+                  ))}
+                </Box>
+              </Box>
+            )}
+            
+            {/* Preview tab */}
+            {activeTab === 'preview' && (
+              <Box
                 sx={{
-                  color: alpha(theme.palette.text.secondary, 0.9),
-                  fontWeight: 500,
-                  fontSize: '0.85rem'
+                  height: '100%',
+                  p: 2.5,
+                  overflow: 'auto',
+                  // Markdown styling
+                  textAlign: 'left',
+                  '& h1, & h2, & h3, & h4, & h5, & h6': {
+                    fontWeight: 600
+                  },
+                  '& h1': { fontSize: '1.5rem' },
+                  '& h2': { fontSize: '1.3rem' },
+                  '& h3': { fontSize: '1.1rem' },
+                  '& h4, & h5, & h6': { fontSize: '1rem' }
                 }}
               >
-                Preview
-              </Typography>
-            </Box>
-          </Box>
-
-          <Box sx={{
-            display: 'flex',
-            flexGrow: 1,
-            height: 'calc(100% - 182px)',
-            borderTop: 'none'
-          }}>
-            {/* Left panel - Markdown editor */}
-            <Box sx={{
-              width: '50%',
-              height: '100%',
-              bgcolor: theme.palette.background.paper,
-              borderRight: '1px solid',
-              borderColor: alpha(theme.palette.divider, 0.15)
-            }}>
-              <TextField
-                multiline
-                fullWidth
-                value={disclosureContent}
-                onChange={handleDisclosureContentChange}
-                placeholder="Describe your security finding..."
-                variant="standard"
-                disabled={submitting}
-                slotProps={{
-                  input: {
-                    disableUnderline: true,
-                    sx: {
-                      height: '100%',
-                      maxHeight: '100%',
-                      p: 0,
-                      overflow: 'auto'
-                    }
-                  }
-                }}
-                sx={{
-                  flexGrow: 1,
-                  height: '100%',
-                  backgroundColor: theme.palette.background.paper,
-                  '& .MuiInputBase-root': {
-                    height: '100%',
-                    alignItems: 'flex-start',
-                    fontFamily: '"SF Mono", "Menlo", "Monaco", "Courier", monospace',
-                    fontSize: '0.875rem',
-                    p: 2.5,
-                    lineHeight: 1.6,
-                    color: alpha('#000', 0.9)
-                  },
-                  '& .MuiInputBase-input': {
-                    height: '100%',
-                    overflow: 'auto',
-                  },
-                  transition: 'background-color 0.2s ease'
-                }}
-              />
-            </Box>
-
-            {/* Right panel - Markdown preview */}
-            <Box sx={{
-              width: '50%',
-              height: '100%',
-              bgcolor: theme.palette.background.paper
-            }}>
-              <Box sx={{
-                height: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                overflow: 'auto',
-                px: 2.5,
-                py: 2.5,
-                textAlign: 'left',
-                '& h1, & h2, & h3, & h4, & h5, & h6': {
-                  fontWeight: 600
-                },
-                '& h1': { fontSize: '1.5rem' },
-                '& h2': { fontSize: '1.3rem' },
-                '& h3': { fontSize: '1.1rem' },
-                '& h4, & h5, & h6': { fontSize: '1rem' }
-              }}>
-                <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-                  {disclosureContent}
-                </ReactMarkdown>
+                {disclosureContent ? (
+                  <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+                    {disclosureContent}
+                  </ReactMarkdown>
+                ) : (
+                  <Typography 
+                    color="text.secondary" 
+                    sx={{ 
+                      opacity: 0.6, 
+                      fontStyle: 'italic', 
+                      fontSize: '0.875rem' 
+                    }}
+                  >
+                    Nothing to preview
+                  </Typography>
+                )}
               </Box>
-            </Box>
+            )}
           </Box>
         </DialogContent>
 
@@ -444,13 +471,13 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
                     '&.Mui-checked': {
                       color: theme.palette.primary.main,
                     },
-                    padding: '2px',
-                    borderRadius: '2px',
-                    width: 16,
-                    height: 16,
+                    padding: '3px',
+                    borderRadius: '3px',
+                    width: 20, // 20% larger
+                    height: 20, // 20% larger
                     '& .MuiSvgIcon-root': {
-                      fontSize: '1rem',
-                      borderRadius: '2px'
+                      fontSize: '1.2rem', // 20% larger
+                      borderRadius: '3px'
                     }
                   }}
                 />
@@ -458,7 +485,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
               label={
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                   <Typography variant="caption" color="text.secondary" sx={{
-                    fontSize: '0.75rem',
+                    fontSize: '0.9rem', // 20% larger from original 0.75rem
                     lineHeight: 1.5,
                     opacity: 0.9
                   }}>
@@ -479,7 +506,7 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
                       }}
                     >
                       responsible disclosure policy
-                      <OpenInNewIcon sx={{ fontSize: '0.75rem', ml: 0.5 }} />
+                      <OpenInNewIcon sx={{ fontSize: '0.9rem', ml: 0.5 }} /> {/* 20% larger */}
                     </Link>
                   </Typography>
                 </Box>
@@ -487,10 +514,10 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
               sx={{
                 margin: 0,
                 '.MuiFormControlLabel-label': {
-                  fontSize: '0.75rem'
+                  fontSize: '0.9rem' // 20% larger
                 },
                 '& .MuiCheckbox-root': {
-                  marginRight: 0.5
+                  marginRight: 0.7 // Slightly more space after the larger checkbox
                 }
               }}
             />
@@ -740,4 +767,4 @@ const DisclosureModal: React.FC<DisclosureModalProps> = ({
   );
 };
 
-export default DisclosureModal; 
+export default DisclosureModal;

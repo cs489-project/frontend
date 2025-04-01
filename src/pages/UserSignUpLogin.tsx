@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Container, TextField, Button, Paper, Tabs, Tab, Typography, Link, Box, Alert } from "@mui/material";
+import { Container, TextField, Button, Paper, Tabs, Tab, Typography, Link } from "@mui/material";
 import QRCode from "../components/QRCode";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";

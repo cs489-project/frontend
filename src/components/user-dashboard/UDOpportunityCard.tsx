@@ -95,7 +95,7 @@ export default function UDOpportunityCard({
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <Typography
                   fontWeight="600"
-                  fontSize="0.95rem"
+                  fontSize="1rem"
                   noWrap
                   sx={{ color: "#1a2027" }}
                 >
@@ -110,12 +110,12 @@ export default function UDOpportunityCard({
                   }}
                 >
                   <AccessTimeIcon
-                    sx={{ color: "#94a3b8", fontSize: "0.75rem" }}
+                    sx={{ color: "#94a3b8", fontSize: "0.85rem" }}
                   />
                   <Typography
                     variant="caption"
                     color="text.secondary"
-                    sx={{ fontSize: "0.7rem" }}
+                    sx={{ fontSize: "0.8rem" }}
                   >
                     {relativeTime}
                   </Typography>
@@ -129,7 +129,7 @@ export default function UDOpportunityCard({
               color="text.secondary"
               noWrap
               sx={{
-                fontSize: "0.8rem",
+                fontSize: "0.875rem",
                 fontWeight: 500,
                 mt: 0.1,
                 mb: 0.5,
@@ -143,16 +143,16 @@ export default function UDOpportunityCard({
             variant="body2"
             color="text.secondary"
             sx={{
-              height: "34px",
+              height: "40px",
               overflow: "hidden",
               textOverflow: "ellipsis",
               display: "-webkit-box",
               WebkitBoxOrient: "vertical",
               WebkitLineClamp: 2,
-              lineHeight: "1.2",
+              lineHeight: "1.3",
               color: "#637381",
               mb: 0.75,
-              fontSize: "0.8rem",
+              fontSize: "0.875rem",
             }}
           >
             {previewDescription}
@@ -166,8 +166,8 @@ export default function UDOpportunityCard({
                 label={tag}
                 size="small"
                 sx={{
-                  height: 24,
-                  fontSize: "0.75rem",
+                  height: 26,
+                  fontSize: "0.8rem",
                   backgroundColor: "transparent",
                   color: "#94a3b8",
                   fontWeight: 500,
@@ -188,7 +188,7 @@ export default function UDOpportunityCard({
           color: "#94a3b8",
           opacity: 0.7,
           transition: "all 0.15s ease",
-          fontSize: "1rem",
+          fontSize: "1.1rem",
           mt: 0.75,
           ml: 1,
         }}

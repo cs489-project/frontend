@@ -13,8 +13,8 @@ interface DisclosureCardProps extends Disclosure {
 }
 
 const commonChipStyles = {
-  height: 24,
-  fontSize: "0.75rem",
+  height: 26,
+  fontSize: "0.8rem",
   fontWeight: 500,
   px: 0.75,
 };
@@ -93,7 +93,7 @@ export default function UDInboxDisclosureCard({
             color="text.secondary"
             noWrap
             sx={{
-              fontSize: "0.8rem",
+              fontSize: "0.875rem",
               fontWeight: 500,
               mb: 0.75,
             }}
@@ -104,22 +104,22 @@ export default function UDInboxDisclosureCard({
           {/* Markdown preview */}
           <Box
             sx={{
-              height: "3.6em",
+              height: "4.2em",
               overflow: "hidden",
               mb: 0.75,
               '& .markdown-preview': {
                 textAlign: 'left',
-                fontSize: '0.875rem',
+                fontSize: '0.96rem',
                 color: alpha(theme.palette.text.primary, 0.9),
-                lineHeight: 1.5,
+                lineHeight: 1.35,
                 '& h1, & h2, & h3, & h4, & h5, & h6': {
                   fontWeight: 600,
-                  fontSize: '0.875rem',
+                  fontSize: '0.96rem',
                   margin: 0,
                 },
                 '& p': {
                   margin: 0,
-                  fontSize: '0.875rem',
+                  fontSize: '0.96rem',
                 },
                 '& *:not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(p)': {
                   display: 'none'
@@ -183,7 +183,7 @@ export default function UDInboxDisclosureCard({
           color: "#94a3b8",
           opacity: 0.7,
           transition: "all 0.15s ease",
-          fontSize: "1rem",
+          fontSize: "1.1rem",
           mt: 0.75,
           ml: 1,
         }}
