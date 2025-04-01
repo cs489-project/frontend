@@ -1,11 +1,12 @@
 import { useEffect } from "react";
 import axios from "axios";
 import { useUserInfoContext } from "./Context";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AxiosInterceptorSetup = () => {
     const meData = useUserInfoContext();
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const interceptor = axios.interceptors.response.use(
@@ -16,10 +17,13 @@ const AxiosInterceptorSetup = () => {
                 }
 
                 if (error.response?.status === 400 && error.response?.data?.error === "Invalid session") {
-                    if (meData.role === "researcher") {
-                        navigate("/?noSession=1");
-                    } else {
+                    console.log(window.location.pathname)
+                    if (location.pathname.startsWith("/admin")) {
+                        navigate("/admin?noSession=1");
+                    } else if (location.pathname.startsWith("/org")) {
                         navigate("/org?noSession=1");
+                    } else {
+                        navigate("/?noSession=1");
                     }
                     return new Promise(() => { });
                 }
