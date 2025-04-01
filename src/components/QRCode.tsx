@@ -43,7 +43,7 @@ const QRCodeGenerator = ({ type, goBack, onSuccess }: Props) => {
       const response = await axios.post("/api/users/register-mfa");
       setQRCode(response.data.uri);
       setActiveStep(1);
-    } catch (error) {
+    } catch {
       showSnackbar("Failed to generate QR code. Please try again.", "error");
     } finally {
       setIsLoading(false);

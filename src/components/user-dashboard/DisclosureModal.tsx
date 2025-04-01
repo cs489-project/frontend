@@ -29,7 +29,6 @@ import MarkdownIcon from "@mui/icons-material/Code";
 import SendIcon from "@mui/icons-material/Send";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import LightbulbOutlinedIcon from "@mui/icons-material/LightbulbOutlined";
-import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { disclosureService } from "../../services/disclosureService";
