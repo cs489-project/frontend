@@ -135,7 +135,7 @@ export default function AdminDashBoard() {
             <Dialog fullWidth maxWidth="md" open={!!detailPosting} onClose={() => setDetailPosting(null)}>
                 <PostingDetailPopUp jobRequest={detailPosting} />
             </Dialog>
-            <Typography variant="h6" sx={{ flexGrow: 1, background: "grey" }}>Copmany Sign-up Requests</Typography>
+            <Typography variant="h6" sx={{ flexGrow: 1, background: "grey" }}>Company Sign-up Requests</Typography>
             {pendingSignUps.length > 0 ?
                 <TableContainer component={Paper} sx={{ maxHeight: 300, overflowY: "auto" }}>
                     <Table stickyHeader>
@@ -199,7 +199,7 @@ export default function AdminDashBoard() {
                         </TableBody>
                     </Table>
                 </TableContainer>
-                : <Typography align="center" sx={{ p: 4, marginX: "auto" }}>No pending sign ups at the moment</Typography>}
+                : <Typography align="center" sx={{ p: 4, marginX: "auto" }}>No pending posting requests at the moment</Typography>}
         </Card>
     </div>
 }

@@ -1,13 +1,13 @@
 import { JSX } from "@emotion/react/jsx-runtime";
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 type MeType = {
     auth_stage: "password" | "pending_mfa" | "mfa_verified" | "email_verified",
     email: string,
     name: string,
-    role: "organization" | "researcher",
+    role: "organization" | "researcher" | "admin",
     metadata: {
         approved: boolean,
         logo_url?: string
@@ -31,11 +31,23 @@ const MyContext = createContext<MeType>(DEFAULT);
 export const UserInfoProvider = ({ children }: { children: JSX.Element }) => {
     const [value, setValue] = useState<MeType>(DEFAULT);
     const location = useLocation(); // Get the current route info
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchMe() {
             const response = await axios.get("/api/users/me");
             setValue(response.data);
+
+            if (response.data?.role !== "organization") {
+                return;
+            }
+
+            if (!location.pathname.includes("/org/pending") && !response.data?.metadata?.approved) {
+                navigate("/org/pending");
+            }
+            if (location.pathname.includes("/org/pending") && response.data?.metadata?.approved) {
+                navigate("/org/dashboard");
+            }
         }
 
         fetchMe();
