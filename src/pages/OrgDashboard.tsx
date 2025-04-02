@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AppBar, Toolbar, Tabs, Tab, IconButton, Menu, MenuItem, Typography, Box, Avatar } from "@mui/material";
+import { AppBar, Toolbar, Tabs, Tab, IconButton, Menu, MenuItem, Typography, Box, Avatar, Badge } from "@mui/material";
 import OrgProfile from "../components/OrgProfile";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useUserInfoContext } from "../utils/Context";
@@ -53,7 +53,9 @@ export default function OrgDashboard() {
                     <Box sx={{ flexGrow: 1 }} />
                     <Typography>Welcome back, {meData.name}</Typography>
                     <IconButton color="inherit" onClick={handleProfileClick} size="large">
-                        <Avatar src={meData.metadata.logo_url || ""} alt={meData.name}></Avatar>
+                        <Badge invisible={meData.auth_stage === "email_verified"} color="warning" badgeContent="!" anchorOrigin={{ vertical: "top", horizontal: "right" }}>
+                            <Avatar src={meData.metadata.logo_url || ""} alt={meData.name}></Avatar>
+                        </Badge>
                     </IconButton>
                     <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
                         <MenuItem onClick={() => setOrgProfile(true)}>Profile</MenuItem>
