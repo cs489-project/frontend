@@ -3,6 +3,7 @@ import { FormEvent, useState } from "react";
 import { useUserInfoContext } from "../utils/Context";
 import axios from "axios";
 import { useSnackbar } from "./SnackBar";
+import { getCsrfToken } from "../utils/csrf";
 
 type Props = {
     open: boolean,
@@ -45,7 +46,8 @@ export default function OrgProfile({ open, onClose }: Props) {
         try {
             await axios.put("/api/users/change-password", {
                 old_password: form.oldPassword,
-                password: form.newPassword
+                password: form.newPassword,
+                csrf_token: await getCsrfToken(),
             });
             onClose();
             setPageMode("main");
@@ -66,7 +68,8 @@ export default function OrgProfile({ open, onClose }: Props) {
 
         try {
             await axios.put("/api/users/update-org-logo", {
-                logo_url: url
+                logo_url: url,
+                csrf_token: await getCsrfToken(),
             });
             onClose();
             setPageMode("main");

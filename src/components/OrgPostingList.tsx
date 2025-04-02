@@ -3,6 +3,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSnackbar } from "./SnackBar";
 import { useNavigate } from "react-router-dom";
+import { getCsrfToken } from "../utils/csrf";
 
 const StatusMap: Record<string, "default" | "error" | "info" | "success" | "warning"> = {
     "created": "default",
@@ -46,12 +47,14 @@ function OrgPosting(props: PostingProp) {
             let message = "";
             if (confirmSubmit) {
                 const response = await axios.post("/api/requests/submit-for-approval", {
-                    request_id: id
+                    request_id: id,
+                    csrf_token: await getCsrfToken(),
                 });
                 message = response.data.message;
             } else {
                 const response = await axios.post("/api/requests/archive", {
-                    request_id: id
+                    request_id: id,
+                    csrf_token: await getCsrfToken(),
                 });
                 message = response.data.message;
             }

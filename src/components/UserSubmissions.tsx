@@ -4,6 +4,7 @@ import MarkdownWrapper from "./MarkdownWrapper";
 import axios from "axios";
 import { useSnackbar } from "./SnackBar";
 import { useUserInfoContext } from "../utils/Context";
+import { getCsrfToken } from "../utils/csrf";
 
 type Report = {
     commentCount: number,
@@ -65,7 +66,8 @@ function SubmissionChat(props: Props) {
         try {
             await axios.post("/api/reports/comment", {
                 report_id: report.id,
-                content: message
+                content: message,
+                csrf_token: await getCsrfToken(),
             });
             setMessage("");
             getDetailedReport();
@@ -78,12 +80,14 @@ function SubmissionChat(props: Props) {
         try {
             if (approve) {
                 await axios.post('/api/reports/accept-report', {
-                    report_id: report.id
+                    report_id: report.id,
+                    csrf_token: await getCsrfToken(),
                 });
                 showSnackbar("Report Accepted", "success");
             } else {
                 await axios.post('/api/reports/reject-report', {
-                    report_id: report.id
+                    report_id: report.id,
+                    csrf_token: await getCsrfToken(),
                 });
                 showSnackbar("Report Rejected", "success");
             }

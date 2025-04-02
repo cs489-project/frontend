@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getCsrfToken } from "../utils/csrf";
 
 export type ThreadMessage = {
   senderName: string;
@@ -91,7 +92,8 @@ export const disclosureService = {
     try {
       const response = await axios.post('/api/reports/comment', {
         report_id: disclosureId,
-        content: messageData.content
+        content: messageData.content,
+        csrf_token: await getCsrfToken(),
       });
       
       return response.status === 200;
@@ -106,7 +108,8 @@ export const disclosureService = {
     try {
       const response = await axios.post('/api/reports/create-report', {
         request_id: opportunityId,
-        content: content
+        content: content,
+        csrf_token: await getCsrfToken(),
       });
       
       return response.status === 200;

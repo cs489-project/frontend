@@ -4,6 +4,7 @@ import MarkdownWrapper from "./MarkdownWrapper";
 import { useSnackbar } from "./SnackBar";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
+import { getCsrfToken } from "../utils/csrf";
 
 const INITIAL_STATE = {
     title: "",
@@ -70,7 +71,8 @@ export default function PostingBuilder() {
                     summary: form.summary,
                     description: form.detailedDescription,
                     disclosure_policy_url: form.responsibleDisclosureUrl,
-                    tags: form.tags
+                    tags: form.tags,
+                    csrf_token: await getCsrfToken(),
                 });
                 showSnackbar("Posting edited successfully", "success");
             } else {
@@ -80,7 +82,8 @@ export default function PostingBuilder() {
                     summary: form.summary,
                     description: form.detailedDescription,
                     disclosure_policy_url: form.responsibleDisclosureUrl,
-                    tags: form.tags
+                    tags: form.tags,
+                    csrf_token: await getCsrfToken(),
                 });
                 showSnackbar("Posting created successfully", "success");
             }

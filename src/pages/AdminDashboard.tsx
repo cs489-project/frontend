@@ -5,6 +5,7 @@ import { useSnackbar } from "../components/SnackBar";
 import { useUserInfoContext } from "../utils/Context";
 import MarkdownWrapper from "../components/MarkdownWrapper";
 import { useNavigate } from "react-router-dom";
+import { getCsrfToken } from "../utils/csrf";
 
 type SignUp = {
     name: string,
@@ -73,7 +74,8 @@ export default function AdminDashBoard() {
     const handleApproveSignup = async (id: number) => {
         try {
             await axios.post("/api/admin/approve-organization", {
-                organization_id: id
+                organization_id: id,
+                csrf_token: await getCsrfToken(),
             });
             showSnackbar("Organization approved", "success");
             fetchSignups();
@@ -86,12 +88,14 @@ export default function AdminDashBoard() {
         try {
             if (approve) {
                 await axios.post("/api/admin/approve-request", {
-                    request_id: id
+                    request_id: id,
+                    csrf_token: await getCsrfToken(),
                 });
                 showSnackbar("Request approved.", "success");
             } else {
                 await axios.post("/api/admin/reject-request", {
-                    request_id: id
+                    request_id: id,
+                    csrf_token: await getCsrfToken(),
                 });
                 showSnackbar("Request rejected.", "success");
             }
