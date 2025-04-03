@@ -63,7 +63,9 @@ export default function AdminDashBoard() {
 
     const handleLogOut = async () => {
         try {
-            await axios.post("/api/users/logout");
+            await axios.post("/api/users/logout", {
+                csrf_token: await getCsrfToken(),
+            });
         } catch (e) {
             console.log(e);
         }

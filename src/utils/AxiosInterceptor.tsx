@@ -16,7 +16,7 @@ const AxiosInterceptorSetup = () => {
                     return Promise.reject(error);
                 }
 
-                if (error.response?.status === 400 && error.response?.data?.error === "Invalid session") {
+                if ([400, 401, 403].includes(error.response?.status) && ["Invalid session", "Invalid permission"].includes(error.response?.data?.error)) {
                     console.log(window.location.pathname)
                     if (location.pathname.startsWith("/admin")) {
                         navigate("/admin?noSession=1");

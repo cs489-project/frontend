@@ -6,6 +6,7 @@ import { useUserInfoContext } from "../utils/Context";
 import axios from "axios";
 import { useSnackbar } from "../components/SnackBar";
 import EmailUs from "../components/EmailUs";
+import { getCsrfToken } from "../utils/csrf";
 
 export default function OrgDashboard() {
     const location = useLocation();
@@ -32,7 +33,9 @@ export default function OrgDashboard() {
 
     const handleLogOut = async () => {
         try {
-            await axios.post("/api/users/logout");
+            await axios.post("/api/users/logout", {
+                csrf_token: await getCsrfToken(),
+            });
         } catch (e) {
             console.log(e);
         }

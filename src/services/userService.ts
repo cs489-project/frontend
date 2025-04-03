@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getCsrfToken } from "../utils/csrf";
 
 export type User = {
   name: string;
@@ -31,7 +32,9 @@ export const userService = {
   // Log out the current user
   logout: async (): Promise<boolean> => {
     try {
-      const response = await axios.post('/api/users/logout');
+      const response = await axios.post('/api/users/logout', {
+        csrf_token: await getCsrfToken(),
+      });
       return response.status === 200;
     } catch (error) {
       console.error('Error logging out:', error);
